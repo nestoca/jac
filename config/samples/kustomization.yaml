@@ -1,0 +1,5 @@
+## Append samples of your project ##
+resources:
+- jac_v1alpha1_group.yaml
+- jac_v1alpha1_person.yaml
+#+kubebuilder:scaffold:manifestskustomizesamples
