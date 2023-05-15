@@ -35,17 +35,19 @@ spec:
           spec:
             description: PersonSpec defines the desired state of Person
             properties:
-              fullName:
-                description: Full display name of the group.
+              firstName:
                 type: string
-              parent:
-                description: Parent group, if any.
+              groups:
+                description: 'Groups this person belongs to (eg: teams, roles, streams...)'
+                items:
+                  type: string
+                type: array
+              lastName:
                 type: string
-              type:
-                description: 'The type of the group (eg: team, department, role).'
+              middleName:
                 type: string
               values:
-                description: Custom values that can be associated with group.
+                description: Custom values associated with person.
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
             type: object

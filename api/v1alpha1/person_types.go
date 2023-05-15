@@ -23,16 +23,14 @@ import (
 
 // PersonSpec defines the desired state of Person
 type PersonSpec struct {
-	// Full display name of the group.
-	FullName string `json:"fullName,omitempty"`
+	FirstName  string `json:"firstName,omitempty"`
+	MiddleName string `json:"middleName,omitempty"`
+	LastName   string `json:"lastName,omitempty"`
 
-	// Parent group, if any.
-	Parent string `json:"parent,omitempty"`
+	// Groups this person belongs to (eg: teams, roles, streams...)
+	Groups []string `json:"groups,omitempty"`
 
-	// The type of the group (eg: team, department, role).
-	Type string `json:"type,omitempty"`
-
-	// Custom values that can be associated with group.
+	// Custom values associated with person.
 	Values runtime.RawExtension `json:"values,omitempty"`
 }
 

@@ -21,21 +21,19 @@ import (
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
 // GroupSpec defines the desired state of Group
 type GroupSpec struct {
 	// Full display name of the group.
 	FullName string `json:"fullName,omitempty"`
 
-	// Parent group, if any.
-	Parent string `json:"parent,omitempty"`
-
-	// The type of the group (eg: team, department, role).
+	// The group's type (eg: team, role, stream).
 	Type string `json:"type,omitempty"`
 
-	// Custom values that can be associated with group.
+	// The group's parent groups (that will be inherited by all persons
+	// part of present and child groups).
+	Parents []string `json:"parents,omitempty"`
+
+	// Custom values associated with group.
 	Values runtime.RawExtension `json:"values,omitempty"`
 }
 
