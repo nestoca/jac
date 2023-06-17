@@ -7,6 +7,8 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
 	"os"
+	"regexp"
+	"strings"
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
@@ -49,19 +51,46 @@ func createGetGroupsCmd() *cobra.Command {
 		Use:     "groups",
 		Short:   "Get groups",
 		Aliases: []string{"group"},
+		Args:    cobra.ArbitraryArgs,
 		Run: func(cmd *cobra.Command, args []string) {
 			objs, err := loadObjects(globFlag)
 			if err != nil {
 				fmt.Printf("Failed to load CRDs: %v\n", err)
 				os.Exit(1)
 			}
-			printGroups(getGroups(objs, typeFilter), typeFilter == "")
+			nameFilter, err := NewFilter(args)
+			if err != nil {
+				fmt.Printf("Failed to parse filter %q: %v\n", args, err)
+				os.Exit(1)
+			}
+			printGroups(getGroups(objs, typeFilter, nameFilter), typeFilter == "")
 		},
 	}
 
 	cmd.Flags().StringVarP(&typeFilter, "type", "t", "", "Filter by group type")
 	return cmd
 }
+
+//func createGetPeopleCmd() *cobra.Command {
+//	typeFilter := ""
+//	cmd := &cobra.Command{
+//		Use:     "people",
+//		Short:   "Get people",
+//		Aliases: []string{"person"},
+//		Args:    cobra.ArbitraryArgs,
+//		Run: func(cmd *cobra.Command, args []string) {
+//			objs, err := loadObjects(globFlag)
+//			if err != nil {
+//				fmt.Printf("Failed to load CRDs: %v\n", err)
+//				os.Exit(1)
+//			}
+//			printGroups(getGroups(objs, typeFilter), typeFilter == "")
+//		},
+//	}
+//
+//	cmd.Flags().StringVarP(&typeFilter, "group", "g", "", "Filter by group")
+//	return cmd
+//}
 
 func loadObjects(globExpr string) ([]runtime.Object, error) {
 	fileAssets, _, err := glob.Glob([]string{globExpr})
@@ -108,16 +137,24 @@ func loadObjects(globExpr string) ([]runtime.Object, error) {
 	return objs, nil
 }
 
-func getGroups(objs []runtime.Object, typeFilter string) []*v1alpha1.Group {
+func getGroups(objs []runtime.Object, typeFilter string, nameFilter *Filter) []*v1alpha1.Group {
 	var groups []*v1alpha1.Group
 	for _, obj := range objs {
 		group, ok := obj.(*v1alpha1.Group)
 		if !ok {
 			continue
 		}
+
+		// Filter by type
 		if typeFilter != "" && group.Spec.Type != typeFilter {
 			continue
 		}
+
+		// Filter by names
+		if nameFilter != nil && !nameFilter.Match(group.Name) {
+			continue
+		}
+
 		groups = append(groups, group)
 	}
 	return groups
@@ -148,4 +185,32 @@ func printGroups(objs []*v1alpha1.Group, showType bool) {
 	}
 
 	table.Render()
+}
+
+type Filter struct {
+	expr *regexp.Regexp
+}
+
+func NewFilter(patterns []string) (*Filter, error) {
+	if len(patterns) == 0 {
+		return &Filter{expr: nil}, nil
+	}
+	builder := strings.Builder{}
+	for i, p := range patterns {
+		if i > 0 {
+			builder.WriteString("|")
+		}
+		builder.WriteString("^")
+		builder.WriteString(strings.ReplaceAll(p, "*", ".*"))
+		builder.WriteString("$")
+	}
+	expr, err := regexp.Compile(builder.String())
+	if err != nil {
+		return nil, fmt.Errorf("parsing patterns %q: %w", patterns, err)
+	}
+	return &Filter{expr: expr}, nil
+}
+
+func (f *Filter) Match(s string) bool {
+	return f.expr == nil || f.expr.MatchString(s)
 }
