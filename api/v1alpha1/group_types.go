@@ -26,6 +26,9 @@ type GroupSpec struct {
 	// Full display name of the group.
 	FullName string `json:"fullName,omitempty"`
 
+	// The group's email address.
+	Email string `json:"email,omitempty"`
+
 	// The group's type (eg: team, role, stream).
 	Type string `json:"type,omitempty"`
 

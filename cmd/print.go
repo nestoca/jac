@@ -26,10 +26,10 @@ func printGroupsTable(groups []*v1alpha1.Group) {
 	table.SetRowSeparator("")
 	table.SetCenterSeparator("")
 
-	table.SetHeader([]string{"NAME", "FULL NAME", "TYPE"})
+	table.SetHeader([]string{"NAME", "FULL NAME", "EMAIL", "TYPE"})
 
 	for _, obj := range groups {
-		table.Append([]string{obj.Name, obj.Spec.FullName, obj.Spec.Type})
+		table.Append([]string{obj.Name, obj.Spec.FullName, obj.Spec.Email, obj.Spec.Type})
 	}
 
 	table.Render()
@@ -67,7 +67,7 @@ func printPeopleTable(groups []*v1alpha1.Person) {
 	table.SetRowSeparator("")
 	table.SetCenterSeparator("")
 
-	headers := []string{"NAME", "FIRST NAME", "LAST NAME", "GROUPS"}
+	headers := []string{"NAME", "FIRST NAME", "LAST NAME", "EMAIL", "GROUPS"}
 	table.SetHeader(headers)
 
 	for _, obj := range groups {
@@ -75,7 +75,7 @@ func printPeopleTable(groups []*v1alpha1.Person) {
 		for _, group := range obj.Spec.Groups {
 			groupNames += group + " "
 		}
-		table.Append([]string{obj.Name, obj.Spec.FirstName, obj.Spec.LastName, groupNames})
+		table.Append([]string{obj.Name, obj.Spec.FirstName, obj.Spec.LastName, obj.Spec.Email, groupNames})
 	}
 
 	table.Render()

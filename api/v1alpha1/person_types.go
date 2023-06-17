@@ -23,9 +23,9 @@ import (
 
 // PersonSpec defines the desired state of Person
 type PersonSpec struct {
-	FirstName  string `json:"firstName,omitempty"`
-	MiddleName string `json:"middleName,omitempty"`
-	LastName   string `json:"lastName,omitempty"`
+	FirstName string `json:"firstName,omitempty"`
+	LastName  string `json:"lastName,omitempty"`
+	Email     string `json:"email,omitempty"`
 
 	// Groups this person belongs to (eg: teams, roles, streams...)
 	Groups []string `json:"groups,omitempty"`
