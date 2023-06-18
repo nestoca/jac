@@ -26,10 +26,14 @@ func printGroupsTable(groups []*v1alpha1.Group) {
 	table.SetRowSeparator("")
 	table.SetCenterSeparator("")
 
-	table.SetHeader([]string{"NAME", "FULL NAME", "EMAIL", "TYPE"})
+	table.SetHeader([]string{"NAME", "FULL NAME", "EMAIL", "TYPE", "PARENTS"})
 
 	for _, obj := range groups {
-		table.Append([]string{obj.Name, obj.Spec.FullName, obj.Spec.Email, obj.Spec.Type})
+		parentNames := ""
+		for _, group := range obj.Spec.Parents {
+			parentNames += group + " "
+		}
+		table.Append([]string{obj.Name, obj.Spec.FullName, obj.Spec.Email, obj.Spec.Type, parentNames})
 	}
 
 	table.Render()
