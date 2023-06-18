@@ -2,18 +2,13 @@ package main
 
 import (
 	"github.com/nestoca/jac/api/v1alpha1"
-	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/utils/strings/slices"
+	"sort"
 )
 
-func getPeople(objs []runtime.Object, groupsFilter []*v1alpha1.Group, nameFilter *PatternFilter) []*v1alpha1.Person {
+func (c *Catalog) GetPeople(groupsFilter []*v1alpha1.Group, nameFilter *PatternFilter, includeInheritedGroups bool) []*v1alpha1.Person {
 	var people []*v1alpha1.Person
-	for _, obj := range objs {
-		person, ok := obj.(*v1alpha1.Person)
-		if !ok {
-			continue
-		}
-
+	for _, person := range c.People {
 		// Filter by group
 		if len(groupsFilter) > 0 {
 			found := false
@@ -21,6 +16,16 @@ func getPeople(objs []runtime.Object, groupsFilter []*v1alpha1.Group, nameFilter
 				if slices.Contains(person.Spec.Groups, group.Name) {
 					found = true
 					break
+				}
+			}
+			if !found && includeInheritedGroups {
+				for _, group := range groupsFilter {
+					for _, inheritedGroup := range person.InheritedGroups {
+						if group.Name == inheritedGroup.Name {
+							found = true
+							break
+						}
+					}
 				}
 			}
 			if !found {
@@ -35,5 +40,8 @@ func getPeople(objs []runtime.Object, groupsFilter []*v1alpha1.Group, nameFilter
 
 		people = append(people, person)
 	}
+	sort.Slice(people, func(i, j int) bool {
+		return people[i].Name < people[j].Name
+	})
 	return people
 }

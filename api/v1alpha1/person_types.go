@@ -50,6 +50,9 @@ type Person struct {
 
 	Spec   PersonSpec   `json:"spec,omitempty"`
 	Status PersonStatus `json:"status,omitempty"`
+
+	Groups          []*Group `json:""`
+	InheritedGroups []*Group `json:""`
 }
 
 //+kubebuilder:object:root=true

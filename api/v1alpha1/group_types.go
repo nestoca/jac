@@ -56,6 +56,8 @@ type Group struct {
 
 	Spec   GroupSpec   `json:"spec,omitempty"`
 	Status GroupStatus `json:"status,omitempty"`
+
+	Parents []*Group `json:""`
 }
 
 //+kubebuilder:object:root=true

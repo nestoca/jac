@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/nestoca/jac/api/v1alpha1"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 var (
@@ -45,20 +44,21 @@ func createGetGroupsCmd() *cobra.Command {
 		Aliases: []string{"group"},
 		Args:    cobra.ArbitraryArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			serializer := NewSerializer()
-			objs, err := loadObjects(serializer, globFlag)
+			catalog := NewCatalog()
+			err := catalog.Load(globFlag)
 			if err != nil {
-				return fmt.Errorf("failed to load CRDs: %v", err)
+				return fmt.Errorf("loading CRDs: %w\n", err)
 			}
 			typeFilter, err := NewPatternFilter(typeFlag)
 			if err != nil {
-				return fmt.Errorf("failed to parse type filter %q: %v", typeFlag, err)
+				return fmt.Errorf("parsing type filter %q: %w", typeFlag, err)
 			}
 			nameFilter, err := NewPatternsFilter(args)
 			if err != nil {
-				return fmt.Errorf("failed to parse name filter %q: %v", args, err)
+				return fmt.Errorf("parsing name filter %q: %w", args, err)
 			}
-			return printGroups(serializer, getGroups(objs, typeFilter, nameFilter), yamlFlag)
+			printer := NewPrinter(catalog.Serializer, yamlFlag)
+			return printer.PrintGroups(catalog.GetGroups(typeFilter, nameFilter))
 		},
 	}
 
@@ -68,40 +68,40 @@ func createGetGroupsCmd() *cobra.Command {
 
 func createGetPeopleCmd() *cobra.Command {
 	groupFlag := ""
+	inheritedFlag := false
 	cmd := &cobra.Command{
 		Use:     "people",
 		Short:   "Get people",
 		Aliases: []string{"person"},
 		Args:    cobra.ArbitraryArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			serializer := NewSerializer()
-			objs, err := loadObjects(serializer, globFlag)
+			catalog := NewCatalog()
+			err := catalog.Load(globFlag)
 			if err != nil {
-				fmt.Printf("Failed to load CRDs: %v\n", err)
-				os.Exit(1)
+				return fmt.Errorf("loading CRDs: %w\n", err)
 			}
 			nameFilter, err := NewPatternsFilter(args)
 			if err != nil {
-				fmt.Printf("Failed to parse name filter %q: %v\n", args, err)
-				os.Exit(1)
+				return fmt.Errorf("parsing name filter %q: %w\n", args, err)
 			}
 			var groups []*v1alpha1.Group
 			if groupFlag != "" {
 				groupFilter, err := NewPatternFilter(groupFlag)
 				if err != nil {
-					fmt.Printf("Failed to parse name filter %q: %v\n", args, err)
-					os.Exit(1)
+					return fmt.Errorf("parsing name filter %q: %w\n", args, err)
 				}
-				groups = getGroups(objs, nil, groupFilter)
+				groups = catalog.GetGroups(nil, groupFilter)
 				if len(groups) == 0 {
-					fmt.Printf("No groups found matching %q\n", groupFlag)
-					os.Exit(1)
+					return fmt.Errorf("no groups found matching filter %q\n", groupFlag)
 				}
 			}
-			return printPeople(serializer, getPeople(objs, groups, nameFilter), yamlFlag)
+			printer := NewPrinter(catalog.Serializer, yamlFlag)
+			return printer.PrintPeople(catalog.GetPeople(groups, nameFilter, inheritedFlag))
 		},
 	}
 
 	cmd.Flags().StringVarP(&groupFlag, "group", "g", "", "Filter by group")
+	cmd.Flags().BoolVarP(&inheritedFlag, "inherited", "i", false, "Include inherited groups in the filter")
+
 	return cmd
 }

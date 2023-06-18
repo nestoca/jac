@@ -4,23 +4,33 @@ import (
 	"github.com/nestoca/jac/api/v1alpha1"
 	"github.com/olekukonko/tablewriter"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/serializer/json"
 	"os"
 )
 
-func printGroups(serializer *Serializer, groups []*v1alpha1.Group, yaml bool) error {
-	if yaml {
-		return printGroupYaml(serializer, groups)
+type Printer struct {
+	serializer *json.Serializer
+	yaml       bool
+}
+
+func NewPrinter(serializer *json.Serializer, yaml bool) *Printer {
+	return &Printer{serializer: serializer, yaml: yaml}
+}
+
+func (p *Printer) PrintGroups(groups []*v1alpha1.Group) error {
+	if p.yaml {
+		return p.printGroupYaml(groups)
 	} else {
-		printGroupsTable(groups)
+		p.printGroupsTable(groups)
 	}
 	return nil
 }
 
-func printGroupsTable(groups []*v1alpha1.Group) {
+func (p *Printer) printGroupsTable(groups []*v1alpha1.Group) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 	table.SetHeaderLine(false)
-	table.SetAutoWrapText(false)
+	table.SetAutoWrapText(true)
 	table.SetBorder(false)
 	table.SetColumnSeparator("")
 	table.SetRowSeparator("")
@@ -39,12 +49,12 @@ func printGroupsTable(groups []*v1alpha1.Group) {
 	table.Render()
 }
 
-func printGroupYaml(serializer *Serializer, groups []*v1alpha1.Group) error {
+func (p *Printer) printGroupYaml(groups []*v1alpha1.Group) error {
 	for i, group := range groups {
 		if i > 0 {
 			println("---")
 		}
-		err := printYaml(serializer, group)
+		err := p.printYaml(group)
 		if err != nil {
 			return err
 		}
@@ -52,45 +62,53 @@ func printGroupYaml(serializer *Serializer, groups []*v1alpha1.Group) error {
 	return nil
 }
 
-func printPeople(serializer *Serializer, people []*v1alpha1.Person, yaml bool) error {
-	if yaml {
-		return printPeopleYaml(serializer, people)
+func (p *Printer) PrintPeople(people []*v1alpha1.Person) error {
+	if p.yaml {
+		return p.printPeopleYaml(people)
 	} else {
-		printPeopleTable(people)
+		p.printPeopleTable(people)
 	}
 	return nil
 }
 
-func printPeopleTable(groups []*v1alpha1.Person) {
+func (p *Printer) printPeopleTable(groups []*v1alpha1.Person) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 	table.SetHeaderLine(false)
-	table.SetAutoWrapText(false)
+	table.SetAutoWrapText(true)
 	table.SetBorder(false)
 	table.SetColumnSeparator("")
 	table.SetRowSeparator("")
 	table.SetCenterSeparator("")
 
-	headers := []string{"NAME", "FIRST NAME", "LAST NAME", "EMAIL", "GROUPS"}
+	headers := []string{"NAME", "FIRST NAME", "LAST NAME", "EMAIL", "GROUPS", "INHERITED GROUPS"}
 	table.SetHeader(headers)
 
 	for _, obj := range groups {
+		// Concatenate group names
 		groupNames := ""
 		for _, group := range obj.Spec.Groups {
 			groupNames += group + " "
 		}
-		table.Append([]string{obj.Name, obj.Spec.FirstName, obj.Spec.LastName, obj.Spec.Email, groupNames})
+
+		// Concatenate inherited group names
+		inheritedGroupNames := ""
+		for _, group := range obj.InheritedGroups {
+			inheritedGroupNames += group.Name + " "
+		}
+
+		table.Append([]string{obj.Name, obj.Spec.FirstName, obj.Spec.LastName, obj.Spec.Email, groupNames, inheritedGroupNames})
 	}
 
 	table.Render()
 }
 
-func printPeopleYaml(serializer *Serializer, people []*v1alpha1.Person) error {
+func (p *Printer) printPeopleYaml(people []*v1alpha1.Person) error {
 	for i, person := range people {
 		if i > 0 {
 			println("---")
 		}
-		err := printYaml(serializer, person)
+		err := p.printYaml(person)
 		if err != nil {
 			return err
 		}
@@ -98,6 +116,6 @@ func printPeopleYaml(serializer *Serializer, people []*v1alpha1.Person) error {
 	return nil
 }
 
-func printYaml(serializer *Serializer, obj runtime.Object) error {
-	return serializer.Serializer.Encode(obj, os.Stdout)
+func (p *Printer) printYaml(obj runtime.Object) error {
+	return p.serializer.Encode(obj, os.Stdout)
 }

@@ -2,17 +2,12 @@ package main
 
 import (
 	"github.com/nestoca/jac/api/v1alpha1"
-	"k8s.io/apimachinery/pkg/runtime"
+	"sort"
 )
 
-func getGroups(objs []runtime.Object, typeFilter *PatternFilter, nameFilter *PatternFilter) []*v1alpha1.Group {
+func (c *Catalog) GetGroups(typeFilter *PatternFilter, nameFilter *PatternFilter) []*v1alpha1.Group {
 	var groups []*v1alpha1.Group
-	for _, obj := range objs {
-		group, ok := obj.(*v1alpha1.Group)
-		if !ok {
-			continue
-		}
-
+	for _, group := range c.Groups {
 		// Filter by type
 		if typeFilter != nil && !typeFilter.Match(group.Spec.Type) {
 			continue
@@ -25,5 +20,8 @@ func getGroups(objs []runtime.Object, typeFilter *PatternFilter, nameFilter *Pat
 
 		groups = append(groups, group)
 	}
+	sort.Slice(groups, func(i, j int) bool {
+		return groups[i].Name < groups[j].Name
+	})
 	return groups
 }
