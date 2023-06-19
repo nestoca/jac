@@ -91,10 +91,7 @@ func (b *PatternBuilder) EnterLiteral(ctx *parser.LiteralContext) {
 }
 
 func Parse(value string) (Pattern, error) {
-	input, err := antlr.NewFileStream(value)
-	if err != nil {
-		return nil, fmt.Errorf("creating input stream: %w", err)
-	}
+	input := antlr.NewInputStream(value)
 	lexer := parser.NewPatternLexer(input)
 	stream := antlr.NewCommonTokenStream(lexer, 0)
 	p := parser.NewPatternParser(stream)

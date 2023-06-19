@@ -7,6 +7,9 @@ type PatternFilter struct {
 }
 
 func NewPatternFilter(value string) (*PatternFilter, error) {
+	if value == "" {
+		return &PatternFilter{}, nil
+	}
 	pattern, err := Parse(value)
 	if err != nil {
 		return nil, err
