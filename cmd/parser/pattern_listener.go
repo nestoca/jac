@@ -7,8 +7,8 @@ import "github.com/antlr4-go/antlr/v4"
 type PatternListener interface {
 	antlr.ParseTreeListener
 
-	// EnterParse is called when entering the parse production.
-	EnterParse(c *ParseContext)
+	// EnterRoot is called when entering the root production.
+	EnterRoot(c *RootContext)
 
 	// EnterExpression is called when entering the expression production.
 	EnterExpression(c *ExpressionContext)
@@ -34,8 +34,8 @@ type PatternListener interface {
 	// EnterLiteral is called when entering the literal production.
 	EnterLiteral(c *LiteralContext)
 
-	// ExitParse is called when exiting the parse production.
-	ExitParse(c *ParseContext)
+	// ExitRoot is called when exiting the root production.
+	ExitRoot(c *RootContext)
 
 	// ExitExpression is called when exiting the expression production.
 	ExitExpression(c *ExpressionContext)

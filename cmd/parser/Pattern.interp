@@ -21,7 +21,7 @@ LITERAL
 WS
 
 rule names:
-parse
+root
 expression
 or
 and

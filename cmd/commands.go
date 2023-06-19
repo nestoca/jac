@@ -67,7 +67,7 @@ func createGetGroupsCmd() *cobra.Command {
 
 func createGetPeopleCmd() *cobra.Command {
 	groupFlag := ""
-	inheritedFlag := false
+	immediateFlag := false
 	cmd := &cobra.Command{
 		Use:     "people",
 		Short:   "Get people",
@@ -91,12 +91,12 @@ func createGetPeopleCmd() *cobra.Command {
 				}
 			}
 			printer := NewPrinter(catalog.Serializer, yamlFlag)
-			return printer.PrintPeople(catalog.GetPeople(groupFilter, nameFilter, inheritedFlag))
+			return printer.PrintPeople(catalog.GetPeople(groupFilter, nameFilter, immediateFlag))
 		},
 	}
 
 	cmd.Flags().StringVarP(&groupFlag, "group", "g", "", "Filter by group")
-	cmd.Flags().BoolVarP(&inheritedFlag, "inherited", "i", false, "Include inherited groups in the filter")
+	cmd.Flags().BoolVarP(&immediateFlag, "immediate", "i", false, "Consider only immediate groups in filter, not inherited ones")
 
 	return cmd
 }

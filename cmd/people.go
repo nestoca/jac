@@ -5,14 +5,20 @@ import (
 	"sort"
 )
 
-func (c *Catalog) GetPeople(groupsPattern Pattern, nameFilter *PatternFilter, includeInheritedGroups bool) []*v1alpha1.Person {
+func (c *Catalog) GetPeople(groupsPattern Pattern, nameFilter *PatternFilter, immediateGroupsOnly bool) []*v1alpha1.Person {
 	var people []*v1alpha1.Person
 	for _, person := range c.People {
 		// Filter by group
-		if groupsPattern != nil &&
-			!groupsPattern.Match(person.Spec.Groups) &&
-			(!includeInheritedGroups || groupsPattern.Match(person.InheritedGroups)) {
-			continue
+		if groupsPattern != nil {
+			if immediateGroupsOnly {
+				if !groupsPattern.Match(person.Spec.Groups) {
+					continue
+				}
+			} else {
+				if !groupsPattern.Match(person.AllGroupNames) {
+					continue
+				}
+			}
 		}
 
 		// Filter by names

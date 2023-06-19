@@ -40,7 +40,7 @@ func (b *PatternBuilder) addError(err error) {
 	b.errors = append(b.errors, err)
 }
 
-func (b *PatternBuilder) EnterParse(_ *parser.ParseContext) {
+func (b *PatternBuilder) EnterRoot(_ *parser.RootContext) {
 	b.pushPattern(&AndPattern{})
 }
 
@@ -97,9 +97,8 @@ func Parse(value string) (Pattern, error) {
 	p := parser.NewPatternParser(stream)
 	p.AddErrorListener(antlr.NewConsoleErrorListener())
 	p.BuildParseTrees = true
-	tree := p.Parse()
-	builder := PatternBuilder{}
-	antlr.ParseTreeWalkerDefault.Walk(builder, tree)
+	builder := &PatternBuilder{}
+	antlr.ParseTreeWalkerDefault.Walk(builder, p.Root())
 	if len(builder.errors) > 0 {
 		return nil, fmt.Errorf("parsing pattern %q: %v", value, builder.errors)
 	}

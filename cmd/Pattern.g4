@@ -1,6 +1,6 @@
 grammar Pattern;
 
-parse: expression EOF;
+root: expression EOF;
 
 expression: or;
 

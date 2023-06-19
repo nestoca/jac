@@ -93,7 +93,7 @@ func (p *Printer) printPeopleTable(groups []*v1alpha1.Person) {
 
 		// Concatenate inherited group names
 		inheritedGroupNames := ""
-		for _, group := range obj.InheritedGroups {
+		for _, group := range obj.InheritedGroupsNames {
 			inheritedGroupNames += group + " "
 		}
 

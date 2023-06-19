@@ -20,11 +20,11 @@ func (s *BasePatternListener) EnterEveryRule(ctx antlr.ParserRuleContext) {}
 // ExitEveryRule is called when any rule is exited.
 func (s *BasePatternListener) ExitEveryRule(ctx antlr.ParserRuleContext) {}
 
-// EnterParse is called when production parse is entered.
-func (s *BasePatternListener) EnterParse(ctx *ParseContext) {}
+// EnterRoot is called when production root is entered.
+func (s *BasePatternListener) EnterRoot(ctx *RootContext) {}
 
-// ExitParse is called when production parse is exited.
-func (s *BasePatternListener) ExitParse(ctx *ParseContext) {}
+// ExitRoot is called when production root is exited.
+func (s *BasePatternListener) ExitRoot(ctx *RootContext) {}
 
 // EnterExpression is called when production expression is entered.
 func (s *BasePatternListener) EnterExpression(ctx *ExpressionContext) {}

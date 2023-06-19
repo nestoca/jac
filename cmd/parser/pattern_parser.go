@@ -38,7 +38,7 @@ func patternParserInit() {
 		"", "", "", "", "", "", "WILDCARD", "LITERAL", "WS",
 	}
 	staticData.RuleNames = []string{
-		"parse", "expression", "or", "and", "atom", "parentheses", "not", "wildcard",
+		"root", "expression", "or", "and", "atom", "parentheses", "not", "wildcard",
 		"literal",
 	}
 	staticData.PredictionContextCache = antlr.NewPredictionContextCache()
@@ -114,7 +114,7 @@ const (
 
 // PatternParser rules.
 const (
-	PatternParserRULE_parse       = 0
+	PatternParserRULE_root        = 0
 	PatternParserRULE_expression  = 1
 	PatternParserRULE_or          = 2
 	PatternParserRULE_and         = 3
@@ -125,8 +125,8 @@ const (
 	PatternParserRULE_literal     = 8
 )
 
-// IParseContext is an interface to support dynamic dispatch.
-type IParseContext interface {
+// IRootContext is an interface to support dynamic dispatch.
+type IRootContext interface {
 	antlr.ParserRuleContext
 
 	// GetParser returns the parser.
@@ -136,43 +136,43 @@ type IParseContext interface {
 	Expression() IExpressionContext
 	EOF() antlr.TerminalNode
 
-	// IsParseContext differentiates from other interfaces.
-	IsParseContext()
+	// IsRootContext differentiates from other interfaces.
+	IsRootContext()
 }
 
-type ParseContext struct {
+type RootContext struct {
 	antlr.BaseParserRuleContext
 	parser antlr.Parser
 }
 
-func NewEmptyParseContext() *ParseContext {
-	var p = new(ParseContext)
+func NewEmptyRootContext() *RootContext {
+	var p = new(RootContext)
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = PatternParserRULE_parse
+	p.RuleIndex = PatternParserRULE_root
 	return p
 }
 
-func InitEmptyParseContext(p *ParseContext) {
+func InitEmptyRootContext(p *RootContext) {
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = PatternParserRULE_parse
+	p.RuleIndex = PatternParserRULE_root
 }
 
-func (*ParseContext) IsParseContext() {}
+func (*RootContext) IsRootContext() {}
 
-func NewParseContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *ParseContext {
-	var p = new(ParseContext)
+func NewRootContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *RootContext {
+	var p = new(RootContext)
 
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = PatternParserRULE_parse
+	p.RuleIndex = PatternParserRULE_root
 
 	return p
 }
 
-func (s *ParseContext) GetParser() antlr.Parser { return s.parser }
+func (s *RootContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *ParseContext) Expression() IExpressionContext {
+func (s *RootContext) Expression() IExpressionContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(IExpressionContext); ok {
@@ -188,33 +188,33 @@ func (s *ParseContext) Expression() IExpressionContext {
 	return t.(IExpressionContext)
 }
 
-func (s *ParseContext) EOF() antlr.TerminalNode {
+func (s *RootContext) EOF() antlr.TerminalNode {
 	return s.GetToken(PatternParserEOF, 0)
 }
 
-func (s *ParseContext) GetRuleContext() antlr.RuleContext {
+func (s *RootContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *ParseContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+func (s *RootContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *ParseContext) EnterRule(listener antlr.ParseTreeListener) {
+func (s *RootContext) EnterRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(PatternListener); ok {
-		listenerT.EnterParse(s)
+		listenerT.EnterRoot(s)
 	}
 }
 
-func (s *ParseContext) ExitRule(listener antlr.ParseTreeListener) {
+func (s *RootContext) ExitRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(PatternListener); ok {
-		listenerT.ExitParse(s)
+		listenerT.ExitRoot(s)
 	}
 }
 
-func (p *PatternParser) Parse() (localctx IParseContext) {
-	localctx = NewParseContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 0, PatternParserRULE_parse)
+func (p *PatternParser) Root() (localctx IRootContext) {
+	localctx = NewRootContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 0, PatternParserRULE_root)
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(18)
