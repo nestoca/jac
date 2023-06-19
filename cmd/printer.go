@@ -94,7 +94,7 @@ func (p *Printer) printPeopleTable(groups []*v1alpha1.Person) {
 		// Concatenate inherited group names
 		inheritedGroupNames := ""
 		for _, group := range obj.InheritedGroups {
-			inheritedGroupNames += group.Name + " "
+			inheritedGroupNames += group + " "
 		}
 
 		table.Append([]string{obj.Name, obj.Spec.FirstName, obj.Spec.LastName, obj.Spec.Email, groupNames, inheritedGroupNames})

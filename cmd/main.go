@@ -1,3 +1,4 @@
+//go:generate antlr -Dlanguage=Go -o parser -package parser Pattern.g4
 package main
 
 import (

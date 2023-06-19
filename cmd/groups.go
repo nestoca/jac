@@ -9,12 +9,12 @@ func (c *Catalog) GetGroups(typeFilter *PatternFilter, nameFilter *PatternFilter
 	var groups []*v1alpha1.Group
 	for _, group := range c.Groups {
 		// Filter by type
-		if typeFilter != nil && !typeFilter.Match(group.Spec.Type) {
+		if typeFilter != nil && !typeFilter.Match([]string{group.Spec.Type}) {
 			continue
 		}
 
 		// Filter by names
-		if nameFilter != nil && !nameFilter.Match(group.Name) {
+		if nameFilter != nil && !nameFilter.Match([]string{group.Name}) {
 			continue
 		}
 

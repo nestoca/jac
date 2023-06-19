@@ -1,42 +1,23 @@
 package main
 
-import (
-	"fmt"
-	"regexp"
-	"strings"
-)
+import "strings"
 
 type PatternFilter struct {
-	expr *regexp.Regexp
+	pattern Pattern
 }
 
-func NewPatternFilter(pattern string) (*PatternFilter, error) {
-	return NewPatternsFilter(strings.Split(pattern, ","))
-}
-
-func NewPatternsFilter(patterns []string) (*PatternFilter, error) {
-	if len(patterns) == 0 {
-		return &PatternFilter{expr: nil}, nil
-	}
-	if len(patterns) == 1 && patterns[0] == "" {
-		return &PatternFilter{expr: nil}, nil
-	}
-	builder := strings.Builder{}
-	for i, p := range patterns {
-		if i > 0 {
-			builder.WriteString("|")
-		}
-		builder.WriteString("^")
-		builder.WriteString(strings.ReplaceAll(p, "*", ".*"))
-		builder.WriteString("$")
-	}
-	expr, err := regexp.Compile(builder.String())
+func NewPatternFilter(value string) (*PatternFilter, error) {
+	pattern, err := Parse(value)
 	if err != nil {
-		return nil, fmt.Errorf("parsing patterns %q: %w", patterns, err)
+		return nil, err
 	}
-	return &PatternFilter{expr: expr}, nil
+	return &PatternFilter{pattern: pattern}, nil
 }
 
-func (f *PatternFilter) Match(s string) bool {
-	return f.expr == nil || f.expr.MatchString(s)
+func NewPatternsFilter(values []string) (*PatternFilter, error) {
+	return NewPatternFilter(strings.Join(values, ","))
+}
+
+func (f *PatternFilter) Match(values []string) bool {
+	return f.pattern == nil || f.pattern.Match(values)
 }

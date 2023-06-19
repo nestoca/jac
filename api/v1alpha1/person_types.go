@@ -52,7 +52,7 @@ type Person struct {
 	Status PersonStatus `json:"status,omitempty"`
 
 	Groups          []*Group `json:""`
-	InheritedGroups []*Group `json:""`
+	InheritedGroups []string `json:""`
 }
 
 //+kubebuilder:object:root=true

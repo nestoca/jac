@@ -101,23 +101,21 @@ func (c *Catalog) Load(globExpr string) error {
 const recursionLimit = 50
 
 func (c *Catalog) resolveInheritedGroups(person *v1alpha1.Person) {
-	var inheritedGroups []*v1alpha1.Group
+	var inheritedGroups []string
 	for _, group := range person.Groups {
 		inheritedGroups = append(inheritedGroups, c.resolveInheritedGroupsRecursively(person, group, 1)...)
 	}
-	sort.Slice(inheritedGroups, func(i, j int) bool {
-		return inheritedGroups[i].Name < inheritedGroups[j].Name
-	})
+	sort.Strings(inheritedGroups)
 	person.InheritedGroups = inheritedGroups
 }
 
-func (c *Catalog) resolveInheritedGroupsRecursively(person *v1alpha1.Person, group *v1alpha1.Group, depth int) []*v1alpha1.Group {
-	var inheritedGroups []*v1alpha1.Group
+func (c *Catalog) resolveInheritedGroupsRecursively(person *v1alpha1.Person, group *v1alpha1.Group, depth int) []string {
+	var inheritedGroups []string
 	if depth > recursionLimit {
 		panic(fmt.Sprintf("cyclic group parent references detected for person %s", person.Name))
 	}
 	for _, group := range group.Parents {
-		inheritedGroups = append(inheritedGroups, group)
+		inheritedGroups = append(inheritedGroups, group.Name)
 		inheritedGroups = append(inheritedGroups, c.resolveInheritedGroupsRecursively(person, group, depth+1)...)
 	}
 	return inheritedGroups

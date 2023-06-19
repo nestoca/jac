@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/nestoca/jac/api/v1alpha1"
 	"github.com/spf13/cobra"
 )
 
@@ -84,19 +83,15 @@ func createGetPeopleCmd() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("parsing name filter %q: %w\n", args, err)
 			}
-			var groups []*v1alpha1.Group
+			var groupFilter *PatternFilter
 			if groupFlag != "" {
-				groupFilter, err := NewPatternFilter(groupFlag)
+				groupFilter, err = NewPatternFilter(groupFlag)
 				if err != nil {
-					return fmt.Errorf("parsing name filter %q: %w\n", args, err)
-				}
-				groups = catalog.GetGroups(nil, groupFilter)
-				if len(groups) == 0 {
-					return fmt.Errorf("no groups found matching filter %q\n", groupFlag)
+					return fmt.Errorf("parsing group filter %q: %w\n", args, err)
 				}
 			}
 			printer := NewPrinter(catalog.Serializer, yamlFlag)
-			return printer.PrintPeople(catalog.GetPeople(groups, nameFilter, inheritedFlag))
+			return printer.PrintPeople(catalog.GetPeople(groupFilter, nameFilter, inheritedFlag))
 		},
 	}
 
