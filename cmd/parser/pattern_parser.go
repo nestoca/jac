@@ -32,7 +32,7 @@ var PatternParserStaticData struct {
 func patternParserInit() {
 	staticData := &PatternParserStaticData
 	staticData.LiteralNames = []string{
-		"", "'+'", "','", "'('", "')'", "'!'", "'*'",
+		"", "','", "'&'", "'('", "')'", "'!'",
 	}
 	staticData.SymbolicNames = []string{
 		"", "", "", "", "", "", "WILDCARD", "LITERAL", "WS",

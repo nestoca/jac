@@ -4,9 +4,9 @@ root: expression EOF;
 
 expression: or;
 
-or: and ('+' and)*;
+or: and (',' and)*;
 
-and: atom (',' atom)*;
+and: atom ('&' atom)*;
 
 atom: parentheses | not | wildcard | literal;
 
@@ -18,6 +18,6 @@ wildcard: WILDCARD;
 
 literal: LITERAL;
 
-WILDCARD: '*';
+WILDCARD: ([a-zA-Z0-9_-] | '*')+;
 LITERAL: [a-zA-Z0-9_-]+;
 WS: [ \t\r\n]+ -> skip;
