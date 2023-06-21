@@ -3,36 +3,29 @@ package main
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"path/filepath"
 )
 
 var (
 	globFlag string
 	yamlFlag bool
+	dirFlag  string
 )
 
 func createRootCmd() *cobra.Command {
 	rootCmd := &cobra.Command{
 		Use:   "jac",
-		Short: "Just Another CLI",
+		Short: "Tool to manage people and groups as Infrastructure as Code",
 	}
 
 	rootCmd.PersistentFlags().StringVar(&globFlag, "glob", "**/*.yaml", "Glob expression for matching CRD files")
 	rootCmd.PersistentFlags().BoolVarP(&yamlFlag, "yaml", "y", false, "Output in YAML format")
+	rootCmd.PersistentFlags().StringVarP(&dirFlag, "dir", "d", "", "Directory to search for CRD files (defaults to ~/.jac/repo)")
 
-	getCmd := createGetCmd()
-	getCmd.AddCommand(createGetGroupsCmd())
-	getCmd.AddCommand(createGetPeopleCmd())
-	rootCmd.AddCommand(getCmd)
+	rootCmd.AddCommand(createGetGroupsCmd())
+	rootCmd.AddCommand(createGetPeopleCmd())
+	rootCmd.AddCommand(createPullCmd())
 	return rootCmd
-}
-
-func createGetCmd() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "get",
-		Short: "Get groups or people",
-	}
-
-	return cmd
 }
 
 func createGetGroupsCmd() *cobra.Command {
@@ -43,11 +36,23 @@ func createGetGroupsCmd() *cobra.Command {
 		Aliases: []string{"group"},
 		Args:    cobra.ArbitraryArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			// Resolve directory
+			dir, err := resolveDirectory(dirFlag)
+			if err != nil {
+				return fmt.Errorf("resolving directory: %w", err)
+			}
+
+			// Determine glob
+			glob := filepath.Join(dir, globFlag)
+
+			// Load catalog
 			catalog := NewCatalog()
-			err := catalog.Load(globFlag)
+			err = catalog.Load(glob)
 			if err != nil {
 				return fmt.Errorf("loading CRDs: %w\n", err)
 			}
+
+			// Create filters
 			typeFilter, err := NewPatternFilter(typeFlag)
 			if err != nil {
 				return fmt.Errorf("parsing type filter %q: %w", typeFlag, err)
@@ -56,6 +61,8 @@ func createGetGroupsCmd() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("parsing name filter %q: %w", args, err)
 			}
+
+			// Print groups
 			printer := NewPrinter(catalog.Serializer, yamlFlag)
 			return printer.PrintGroups(catalog.GetGroups(typeFilter, nameFilter))
 		},
@@ -74,11 +81,23 @@ func createGetPeopleCmd() *cobra.Command {
 		Aliases: []string{"person"},
 		Args:    cobra.ArbitraryArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			// Resolve directory
+			dir, err := resolveDirectory(dirFlag)
+			if err != nil {
+				return fmt.Errorf("resolving directory: %w", err)
+			}
+
+			// Determine glob
+			glob := filepath.Join(dir, globFlag)
+
+			// Load catalog
 			catalog := NewCatalog()
-			err := catalog.Load(globFlag)
+			err = catalog.Load(glob)
 			if err != nil {
 				return fmt.Errorf("loading CRDs: %w\n", err)
 			}
+
+			// Create filters
 			nameFilter, err := NewPatternsFilter(args)
 			if err != nil {
 				return fmt.Errorf("parsing name filter %q: %w\n", args, err)
@@ -90,6 +109,8 @@ func createGetPeopleCmd() *cobra.Command {
 					return fmt.Errorf("parsing group filter %q: %w\n", args, err)
 				}
 			}
+
+			// Print people
 			printer := NewPrinter(catalog.Serializer, yamlFlag)
 			return printer.PrintPeople(catalog.GetPeople(groupFilter, nameFilter, immediateFlag))
 		},
@@ -97,6 +118,24 @@ func createGetPeopleCmd() *cobra.Command {
 
 	cmd.Flags().StringVarP(&groupFlag, "group", "g", "", "Filter by group")
 	cmd.Flags().BoolVarP(&immediateFlag, "immediate", "i", false, "Consider only immediate groups in filter, not inherited ones")
+
+	return cmd
+}
+
+// Create command to pull git repo at directory resolved from dirFlag
+func createPullCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "pull",
+		Short: "Pull git repo",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			dir, err := resolveDirectory(dirFlag)
+			if err != nil {
+				return fmt.Errorf("resolving directory: %w", err)
+			}
+
+			return gitPull(dir)
+		},
+	}
 
 	return cmd
 }
