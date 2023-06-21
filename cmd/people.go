@@ -5,7 +5,7 @@ import (
 	"sort"
 )
 
-func (c *Catalog) GetPeople(groupsPattern *PatternFilter, nameFilter *PatternFilter, immediateGroupsOnly bool) []*v1alpha1.Person {
+func (c *Catalog) GetPeople(groupsPattern *PatternFilter, nameFilter *PatternFilter, findFilter *FindFilter, immediateGroupsOnly bool) []*v1alpha1.Person {
 	var people []*v1alpha1.Person
 	for _, person := range c.People {
 		// Filter by group
@@ -23,6 +23,16 @@ func (c *Catalog) GetPeople(groupsPattern *PatternFilter, nameFilter *PatternFil
 
 		// Filter by names
 		if nameFilter != nil && !nameFilter.Match([]string{person.Name}) {
+			continue
+		}
+
+		// Filter by find filter
+		if findFilter != nil &&
+			!findFilter.Match([]string{
+				person.Name,
+				person.Spec.FirstName,
+				person.Spec.LastName,
+				person.Spec.Email}) {
 			continue
 		}
 

@@ -8,7 +8,7 @@ resources and can be queried using the `jac` CLI.
 ## Installing with homebrew
 
 ```bash
-$ brew tap nestoca/tap
+$ brew tap nestoca/public
 $ brew install jac
 ```
 
@@ -71,11 +71,25 @@ $ jac people
 $ jac people <person1>,<person2>,...
 ```
 
+## Find people via freeform text search
+
+Use `--find` or `-f` to find people via freeform text search in their first or last name, email or name identifier: 
+```bash
+$ jac people -f alice
+```
+
 ## List people belonging to any of given groups
 
 Use `--group` or `-g` to filter by group:
 ```bash
 $ jac people -g <group1>,<group2>,...
+```
+
+## List people, displaying group columns
+
+Use `--show-groups` or `-G` to filter by group:
+```bash
+$ jac people -G
 ```
 
 ## Output results as YAML

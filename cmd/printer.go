@@ -65,16 +65,16 @@ func (p *Printer) printGroupYaml(groups []*v1alpha1.Group) error {
 	return nil
 }
 
-func (p *Printer) PrintPeople(people []*v1alpha1.Person) error {
+func (p *Printer) PrintPeople(people []*v1alpha1.Person, showGroups bool) error {
 	if p.yaml {
 		return p.printPeopleYaml(people)
 	} else {
-		p.printPeopleTable(people)
+		p.printPeopleTable(people, showGroups)
 	}
 	return nil
 }
 
-func (p *Printer) printPeopleTable(groups []*v1alpha1.Person) {
+func (p *Printer) printPeopleTable(groups []*v1alpha1.Person, showGroups bool) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 	table.SetHeaderLine(false)
@@ -84,7 +84,11 @@ func (p *Printer) printPeopleTable(groups []*v1alpha1.Person) {
 	table.SetRowSeparator("")
 	table.SetCenterSeparator("")
 
-	headers := []string{"NAME", "FIRST NAME", "LAST NAME", "EMAIL", "GROUPS", "INHERITED GROUPS"}
+	headers := []string{"NAME", "FIRST NAME", "LAST NAME", "EMAIL"}
+	if showGroups {
+		headers = append(headers, "GROUPS")
+		headers = append(headers, "INHERITED GROUPS")
+	}
 	table.SetHeader(headers)
 
 	for _, obj := range groups {
@@ -100,7 +104,13 @@ func (p *Printer) printPeopleTable(groups []*v1alpha1.Person) {
 			inheritedGroupNames += group + " "
 		}
 
-		table.Append([]string{obj.Name, obj.Spec.FirstName, obj.Spec.LastName, obj.Spec.Email, groupNames, inheritedGroupNames})
+		// Add row to table
+		values := []string{obj.Name, obj.Spec.FirstName, obj.Spec.LastName, obj.Spec.Email}
+		if showGroups {
+			values = append(values, groupNames)
+			values = append(values, inheritedGroupNames)
+		}
+		table.Append(values)
 	}
 
 	table.Render()

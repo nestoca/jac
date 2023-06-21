@@ -22,14 +22,14 @@ func createRootCmd() *cobra.Command {
 	rootCmd.PersistentFlags().BoolVarP(&yamlFlag, "yaml", "y", false, "Output in YAML format")
 	rootCmd.PersistentFlags().StringVarP(&dirFlag, "dir", "d", "", "Directory to search for CRD files (defaults to ~/.jac/repo)")
 
-	rootCmd.AddCommand(createGetGroupsCmd())
-	rootCmd.AddCommand(createGetPeopleCmd())
+	rootCmd.AddCommand(createGroupsCmd())
+	rootCmd.AddCommand(createPeopleCmd())
 	rootCmd.AddCommand(createPullCmd())
 	rootCmd.AddCommand(createVersionCmd())
 	return rootCmd
 }
 
-func createGetGroupsCmd() *cobra.Command {
+func createGroupsCmd() *cobra.Command {
 	typeFlag := ""
 	cmd := &cobra.Command{
 		Use:     "groups",
@@ -73,9 +73,11 @@ func createGetGroupsCmd() *cobra.Command {
 	return cmd
 }
 
-func createGetPeopleCmd() *cobra.Command {
+func createPeopleCmd() *cobra.Command {
 	groupFlag := ""
+	findFlag := ""
 	immediateFlag := false
+	showGroupsFlag := false
 	cmd := &cobra.Command{
 		Use:     "people",
 		Short:   "Get people",
@@ -110,14 +112,20 @@ func createGetPeopleCmd() *cobra.Command {
 					return fmt.Errorf("parsing group filter %q: %w\n", args, err)
 				}
 			}
+			var findFilter *FindFilter
+			if findFlag != "" {
+				findFilter = NewFindFilter(findFlag)
+			}
 
 			// Print people
 			printer := NewPrinter(yamlFlag)
-			return printer.PrintPeople(catalog.GetPeople(groupFilter, nameFilter, immediateFlag))
+			return printer.PrintPeople(catalog.GetPeople(groupFilter, nameFilter, findFilter, immediateFlag), showGroupsFlag)
 		},
 	}
 
-	cmd.Flags().StringVarP(&groupFlag, "group", "g", "", "Filter by group")
+	cmd.Flags().StringVarP(&groupFlag, "group", "g", "", "Filter people by group")
+	cmd.Flags().StringVarP(&findFlag, "find", "f", "", "Find people by partial first or last name, email, or name identifier")
+	cmd.Flags().BoolVarP(&showGroupsFlag, "show-groups", "G", false, "Show groups for people matching filter")
 	cmd.Flags().BoolVarP(&immediateFlag, "immediate", "i", false, "Consider only immediate groups in filter, not inherited ones")
 
 	return cmd
