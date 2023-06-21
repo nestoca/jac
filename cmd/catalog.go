@@ -6,18 +6,16 @@ import (
 	"gopkg.in/godo.v2/glob"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
-	"k8s.io/apimachinery/pkg/runtime/serializer/json"
 	"os"
 	"sort"
+	"strings"
 )
 
 type Catalog struct {
 	Groups []*v1alpha1.Group
 	People []*v1alpha1.Person
 
-	Scheme     *runtime.Scheme
-	Serializer *json.Serializer
-	Decoder    runtime.Decoder
+	Scheme *runtime.Scheme
 }
 
 func NewCatalog() *Catalog {
@@ -25,9 +23,7 @@ func NewCatalog() *Catalog {
 	_ = v1alpha1.AddToScheme(sch)
 
 	return &Catalog{
-		Scheme:     sch,
-		Serializer: json.NewSerializerWithOptions(json.DefaultMetaFactory, sch, sch, json.SerializerOptions{Yaml: true}),
-		Decoder:    serializer.NewCodecFactory(sch).UniversalDeserializer(),
+		Scheme: sch,
 	}
 }
 
@@ -39,13 +35,14 @@ func (c *Catalog) Load(globExpr string) error {
 	}
 
 	// Load all matched files
+	decoder := serializer.NewCodecFactory(c.Scheme).UniversalDeserializer()
 	for _, fileAsset := range fileAssets {
 		data, err := os.ReadFile(fileAsset.Path)
 		if err != nil {
 			return fmt.Errorf("reading file %s: %w", fileAsset.Path, err)
 		}
 
-		obj, gvk, err := c.Decoder.Decode(data, nil, nil)
+		obj, gvk, err := decoder.Decode(data, nil, nil)
 		if err != nil {
 			return fmt.Errorf("decoding file %s: %w", fileAsset.Path, err)
 		}
@@ -57,6 +54,7 @@ func (c *Catalog) Load(globExpr string) error {
 				return fmt.Errorf("converting object to Group: %w", err)
 			}
 			sort.Strings(crdObj.Spec.Parents)
+			crdObj.Yaml = strings.TrimSpace(string(data))
 			c.Groups = append(c.Groups, &crdObj)
 		case "Person":
 			var crdObj v1alpha1.Person
@@ -64,6 +62,7 @@ func (c *Catalog) Load(globExpr string) error {
 				return fmt.Errorf("converting object to Person: %w", err)
 			}
 			sort.Strings(crdObj.Spec.Groups)
+			crdObj.Yaml = strings.TrimSpace(string(data))
 			c.People = append(c.People, &crdObj)
 		default:
 			return fmt.Errorf("unsupported CRD kind: %s", gvk.Kind)

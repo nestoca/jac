@@ -51,6 +51,7 @@ type Person struct {
 	Spec   PersonSpec   `json:"spec,omitempty"`
 	Status PersonStatus `json:"status,omitempty"`
 
+	Yaml                 string   `json:""`
 	Groups               []*Group `json:""`
 	InheritedGroupsNames []string `json:""`
 	AllGroupNames        []string `json:""`
@@ -67,4 +68,8 @@ type PersonList struct {
 
 func init() {
 	SchemeBuilder.Register(&Person{}, &PersonList{})
+}
+
+func (p *Person) GetYaml() string {
+	return p.Yaml
 }

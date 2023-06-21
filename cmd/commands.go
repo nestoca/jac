@@ -63,7 +63,7 @@ func createGetGroupsCmd() *cobra.Command {
 			}
 
 			// Print groups
-			printer := NewPrinter(catalog.Serializer, yamlFlag)
+			printer := NewPrinter(yamlFlag)
 			return printer.PrintGroups(catalog.GetGroups(typeFilter, nameFilter))
 		},
 	}
@@ -111,7 +111,7 @@ func createGetPeopleCmd() *cobra.Command {
 			}
 
 			// Print people
-			printer := NewPrinter(catalog.Serializer, yamlFlag)
+			printer := NewPrinter(yamlFlag)
 			return printer.PrintPeople(catalog.GetPeople(groupFilter, nameFilter, immediateFlag))
 		},
 	}

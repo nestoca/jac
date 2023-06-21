@@ -1,20 +1,23 @@
 package main
 
 import (
+	"fmt"
 	"github.com/nestoca/jac/api/v1alpha1"
 	"github.com/olekukonko/tablewriter"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/runtime/serializer/json"
 	"os"
 )
 
 type Printer struct {
-	serializer *json.Serializer
-	yaml       bool
+	yaml bool
 }
 
-func NewPrinter(serializer *json.Serializer, yaml bool) *Printer {
-	return &Printer{serializer: serializer, yaml: yaml}
+func NewPrinter(yaml bool) *Printer {
+	return &Printer{yaml: yaml}
+}
+
+type YamlResource interface {
+	GetYaml() string
 }
 
 func (p *Printer) PrintGroups(groups []*v1alpha1.Group) error {
@@ -117,5 +120,10 @@ func (p *Printer) printPeopleYaml(people []*v1alpha1.Person) error {
 }
 
 func (p *Printer) printYaml(obj runtime.Object) error {
-	return p.serializer.Encode(obj, os.Stdout)
+	if yamlResource, ok := obj.(YamlResource); ok {
+		fmt.Println(yamlResource.GetYaml())
+		return nil
+	} else {
+		return fmt.Errorf("object is not a YamlResource")
+	}
 }
