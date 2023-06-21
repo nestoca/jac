@@ -15,7 +15,7 @@ var (
 func createRootCmd() *cobra.Command {
 	rootCmd := &cobra.Command{
 		Use:   "jac",
-		Short: "Tool to manage people and groups as Infrastructure as Code",
+		Short: "CLI tool for managing people and groups as Infrastructure as Code",
 	}
 
 	rootCmd.PersistentFlags().StringVar(&globFlag, "glob", "**/*.yaml", "Glob expression for matching CRD files")
@@ -25,6 +25,7 @@ func createRootCmd() *cobra.Command {
 	rootCmd.AddCommand(createGetGroupsCmd())
 	rootCmd.AddCommand(createGetPeopleCmd())
 	rootCmd.AddCommand(createPullCmd())
+	rootCmd.AddCommand(createVersionCmd())
 	return rootCmd
 }
 
@@ -134,6 +135,19 @@ func createPullCmd() *cobra.Command {
 			}
 
 			return gitPull(dir)
+		},
+	}
+
+	return cmd
+}
+
+func createVersionCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "version",
+		Short: "Display jac version",
+		Args:  cobra.NoArgs,
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println(version)
 		},
 	}
 

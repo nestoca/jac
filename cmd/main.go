@@ -6,6 +6,8 @@ import (
 	"os"
 )
 
+var version = "v0.0.0"
+
 func main() {
 	rootCmd := createRootCmd()
 

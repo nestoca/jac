@@ -48,6 +48,7 @@ Available Commands:
   help        Help about any command
   people      Get people
   pull        Pull git repo
+  version     Display jac version
 
 Flags:
   -d, --dir string    Directory to search for CRD files (defaults to ~/.jac/repo)
