@@ -24,7 +24,7 @@ changelog:
 brews:
   - tap:
       owner: nestoca
-      name: homebrew-tap
+      name: homebrew-public
     homepage: "https://github.com/nestoca/jac"
     description: "CLI tool for managing people and groups as Infrastructure as Code"
     license: "MIT"
