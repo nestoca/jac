@@ -54,7 +54,8 @@ func newGroupsCmd() *cobra.Command {
 			}
 
 			// Print groups
-			printer := printing.NewPrinter(yamlFlag, treeFlag)
+			isFiltering := typeFlag != "" || len(args) > 0 || findFlag != ""
+			printer := printing.NewPrinter(yamlFlag, treeFlag, isFiltering)
 			return printer.PrintGroups(catalog.RootGroups, catalog.GetGroups(typeFilter, nameFilter, findFilter))
 		},
 	}

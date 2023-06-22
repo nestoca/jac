@@ -4,18 +4,19 @@ import (
 	"fmt"
 	"github.com/nestoca/jac/pkg/live"
 	"github.com/olekukonko/tablewriter"
-	"github.com/shivamMg/ppds/tree"
+	"github.com/silphid/ppds/tree"
 	"k8s.io/apimachinery/pkg/runtime"
 	"os"
 )
 
 type Printer struct {
-	yaml bool
-	tree bool
+	yaml        bool
+	tree        bool
+	isFiltering bool
 }
 
-func NewPrinter(yaml bool, tree bool) *Printer {
-	return &Printer{yaml: yaml, tree: tree}
+func NewPrinter(yaml, tree, isFiltering bool) *Printer {
+	return &Printer{yaml, tree, isFiltering}
 }
 
 type YamlResource interface {
@@ -159,24 +160,24 @@ func (n *Node) Children() (c []tree.Node) {
 }
 
 func (p *Printer) printGroupTree(rootGroups []*live.Group, filteredGroups []*live.Group) {
-	tree.PrintHr(newTreeForGroups("", rootGroups, filteredGroups))
+	tree.PrintHr(p.newTreeForGroups("", rootGroups, filteredGroups))
 }
 
-func newTreeForGroup(group *live.Group, filteredGroups []*live.Group, highlight bool) *Node {
+func (p *Printer) newTreeForGroup(group *live.Group, filteredGroups []*live.Group, highlight bool) *Node {
 	name := group.Spec.FullName
-	if highlight {
+	if p.isFiltering && highlight {
 		name = "\033[33m\033[1m" + name + "\033[0m"
 	}
-	return newTreeForGroups(name, group.Children, filteredGroups)
+	return p.newTreeForGroups(name, group.Children, filteredGroups)
 }
 
-func newTreeForGroups(name string, groups []*live.Group, filteredGroups []*live.Group) *Node {
+func (p *Printer) newTreeForGroups(name string, groups []*live.Group, filteredGroups []*live.Group) *Node {
 	node := Node{name: name}
 	for _, child := range groups {
 		isIn := child.IsIn(filteredGroups)
 		isInOrHasAnyDescendant := isIn || child.HasAnyDescendant(filteredGroups)
 		if isInOrHasAnyDescendant {
-			node.children = append(node.children, newTreeForGroup(child, filteredGroups, isIn))
+			node.children = append(node.children, p.newTreeForGroup(child, filteredGroups, isIn))
 		}
 	}
 	return &node

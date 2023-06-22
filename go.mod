@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/antlr4-go/antlr/v4 v4.13.0
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/shivamMg/ppds v0.0.1
+	github.com/silphid/ppds v0.0.1
 	github.com/spf13/cobra v1.6.0
 	gopkg.in/godo.v2 v2.0.9
 	k8s.io/apimachinery v0.26.1
@@ -23,6 +23,7 @@ require (
 	github.com/mgutz/str v1.2.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
+	github.com/shivamMg/ppds v0.0.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	golang.org/x/exp v0.0.0-20230515195305-f3d0a9c9a5cc // indirect
 	golang.org/x/net v0.3.1-0.20221206200815-1e63c2f08a10 // indirect
