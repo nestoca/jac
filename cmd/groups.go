@@ -13,6 +13,7 @@ func newGroupsCmd() *cobra.Command {
 	typeFlag := ""
 	findFlag := ""
 	treeFlag := false
+	namesFlag := false
 	cmd := &cobra.Command{
 		Use:     "groups",
 		Short:   "List groups",
@@ -55,7 +56,7 @@ func newGroupsCmd() *cobra.Command {
 
 			// Print groups
 			isFiltering := typeFlag != "" || len(args) > 0 || findFlag != ""
-			printer := printing.NewPrinter(yamlFlag, treeFlag, isFiltering)
+			printer := printing.NewPrinter(yamlFlag, treeFlag, namesFlag, isFiltering)
 			return printer.PrintGroups(catalog.RootGroups, catalog.GetGroups(typeFilter, nameFilter, findFilter))
 		},
 	}
@@ -63,5 +64,6 @@ func newGroupsCmd() *cobra.Command {
 	cmd.Flags().StringVar(&typeFlag, "type", "", "Filter by group type")
 	cmd.Flags().BoolVarP(&treeFlag, "tree", "t", false, "Print groups as a tree")
 	cmd.Flags().StringVarP(&findFlag, "find", "f", "", "Find people via freeform text search in their first or last name, email or name identifier")
+	cmd.Flags().BoolVarP(&namesFlag, "show-names", "N", false, "Show identifier names instead of full names")
 	return cmd
 }

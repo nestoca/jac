@@ -14,6 +14,16 @@ func (g *Group) GetYaml() string {
 	return g.Yaml
 }
 
+func (g *Group) GetDisplayName(showNames bool) string {
+	if !showNames && g.Spec.FullName != "" {
+		if g.Spec.Emoji != "" {
+			return g.Spec.Emoji + " " + g.Spec.FullName
+		}
+		return g.Spec.FullName
+	}
+	return g.Name
+}
+
 func (g *Group) HasDescendant(group *Group) bool {
 	for _, child := range g.Children {
 		if child.Name == group.Name {

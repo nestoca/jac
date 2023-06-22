@@ -55,7 +55,7 @@ func newPeopleCmd() *cobra.Command {
 
 			// Print people
 			isFiltering := len(args) > 0 || findFlag != ""
-			printer := printing.NewPrinter(yamlFlag, false, isFiltering)
+			printer := printing.NewPrinter(yamlFlag, false, false, isFiltering)
 			return printer.PrintPeople(catalog.GetPeople(groupFilter, nameFilter, findFilter, immediateFlag), showGroupsFlag)
 		},
 	}

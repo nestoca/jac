@@ -11,8 +11,17 @@ type Person struct {
 	Groups               []*Group
 	InheritedGroupsNames []string
 	AllGroupNames        []string
+	Parent               *Person
+	Children             []*Person
 }
 
 func (p *Person) GetYaml() string {
 	return p.Yaml
+}
+
+func (g *Person) GetDisplayName(showNames bool) string {
+	if !showNames && g.Spec.FirstName != "" {
+		return g.Spec.FirstName + " " + g.Spec.LastName
+	}
+	return g.Name
 }

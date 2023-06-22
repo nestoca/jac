@@ -26,8 +26,11 @@ type GroupSpec struct {
 	// Full display name of the group.
 	FullName string `json:"fullName,omitempty"`
 
-	// Email address of the group.
+	// Optional email address of the group.
 	Email string `json:"email,omitempty"`
+
+	// Optional emoji to picture group in a more visual way.
+	Emoji string `json:"emoji,omitempty"`
 
 	// Type of group (eg: team, role, stream...)
 	Type string `json:"type,omitempty"`

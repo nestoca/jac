@@ -12,11 +12,12 @@ import (
 type Printer struct {
 	yaml        bool
 	tree        bool
+	names       bool
 	isFiltering bool
 }
 
-func NewPrinter(yaml, tree, isFiltering bool) *Printer {
-	return &Printer{yaml, tree, isFiltering}
+func NewPrinter(yaml, tree, names, isFiltering bool) *Printer {
+	return &Printer{yaml, tree, names, isFiltering}
 }
 
 type YamlResource interface {
@@ -51,7 +52,7 @@ func (p *Printer) printGroupsTable(groups []*live.Group) {
 		if obj.Spec.Parent != "" {
 			parent = obj.Spec.Parent
 		}
-		table.Append([]string{obj.Name, obj.Spec.FullName, obj.Spec.Email, obj.Spec.Type, parent})
+		table.Append([]string{obj.Name, obj.GetDisplayName(p.names), obj.Spec.Email, obj.Spec.Type, parent})
 	}
 
 	table.Render()
@@ -164,7 +165,7 @@ func (p *Printer) printGroupTree(rootGroups []*live.Group, filteredGroups []*liv
 }
 
 func (p *Printer) newTreeForGroup(group *live.Group, filteredGroups []*live.Group, highlight bool) *Node {
-	name := group.Spec.FullName
+	name := group.GetDisplayName(p.names)
 	if p.isFiltering && highlight {
 		name = "\033[33m\033[1m" + name + "\033[0m"
 	}
