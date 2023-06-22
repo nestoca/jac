@@ -26,17 +26,16 @@ type GroupSpec struct {
 	// Full display name of the group.
 	FullName string `json:"fullName,omitempty"`
 
-	// The group's email address.
+	// Email address of the group.
 	Email string `json:"email,omitempty"`
 
-	// The group's type (eg: team, role, stream).
+	// Type of group (eg: team, role, stream...)
 	Type string `json:"type,omitempty"`
 
-	// The group's parent groups (that will be inherited by all persons
-	// part of present and child groups).
-	Parents []string `json:"parents,omitempty"`
+	// Parent group that will be inherited by all persons belonging to this group and its subgroups.
+	Parent string `json:"parent,omitempty"`
 
-	// Custom values associated with group.
+	// Arbitrary custom values associated with group.
 	Values runtime.RawExtension `json:"values,omitempty"`
 }
 

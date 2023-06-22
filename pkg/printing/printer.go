@@ -39,14 +39,14 @@ func (p *Printer) printGroupsTable(groups []*live.Group) {
 	table.SetRowSeparator("")
 	table.SetCenterSeparator("")
 
-	table.SetHeader([]string{"NAME", "FULL NAME", "EMAIL", "TYPE", "PARENTS"})
+	table.SetHeader([]string{"NAME", "FULL NAME", "EMAIL", "TYPE", "PARENT"})
 
 	for _, obj := range groups {
-		parentNames := ""
-		for _, group := range obj.Spec.Parents {
-			parentNames += group + " "
+		parent := ""
+		if obj.Spec.Parent != "" {
+			parent = obj.Spec.Parent
 		}
-		table.Append([]string{obj.Name, obj.Spec.FullName, obj.Spec.Email, obj.Spec.Type, parentNames})
+		table.Append([]string{obj.Name, obj.Spec.FullName, obj.Spec.Email, obj.Spec.Type, parent})
 	}
 
 	table.Render()

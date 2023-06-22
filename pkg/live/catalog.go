@@ -54,7 +54,6 @@ func (c *Catalog) Load(globExpr string) error {
 			if err := c.Scheme.Convert(obj, &crdObj, nil); err != nil {
 				return fmt.Errorf("converting object to Group: %w", err)
 			}
-			sort.Strings(crdObj.Spec.Parents)
 			group := &Group{
 				Group: crdObj,
 			}
@@ -78,13 +77,12 @@ func (c *Catalog) Load(globExpr string) error {
 
 	// Resolve group parents for all groups
 	for _, group := range c.Groups {
-		sort.Strings(group.Spec.Parents)
-		for _, parentName := range group.Spec.Parents {
-			parent := c.GetGroup(parentName)
+		if group.Spec.Parent != "" {
+			parent := c.GetGroup(group.Spec.Parent)
 			if parent == nil {
-				return fmt.Errorf("group %s has parent %s which does not exist", group.Name, parentName)
+				return fmt.Errorf("group %s's parent does not exist: %s", group.Name, group.Spec.Parent)
 			}
-			group.Parents = append(group.Parents, parent)
+			group.Parent = parent
 		}
 	}
 
@@ -94,7 +92,7 @@ func (c *Catalog) Load(globExpr string) error {
 		for _, groupName := range person.Spec.Groups {
 			group := c.GetGroup(groupName)
 			if group == nil {
-				return fmt.Errorf("person %s is in group %s which does not exist", person.Name, groupName)
+				return fmt.Errorf("person %s's group does not exist: %s", person.Name, groupName)
 			}
 			person.Groups = append(person.Groups, group)
 		}
@@ -121,9 +119,9 @@ func (c *Catalog) resolveInheritedGroupsRecursively(person *Person, group *Group
 	if depth > recursionLimit {
 		panic(fmt.Sprintf("cyclic group parent references detected for person %s", person.Name))
 	}
-	for _, group := range group.Parents {
-		inheritedGroupNames = append(inheritedGroupNames, group.Name)
-		inheritedGroupNames = append(inheritedGroupNames, c.resolveInheritedGroupsRecursively(person, group, depth+1)...)
+	if group.Parent != nil {
+		inheritedGroupNames = append(inheritedGroupNames, group.Parent.Name)
+		inheritedGroupNames = append(inheritedGroupNames, c.resolveInheritedGroupsRecursively(person, group.Parent, depth+1)...)
 	}
 	return inheritedGroupNames
 }

@@ -35,20 +35,21 @@ spec:
           spec:
             description: GroupSpec defines the desired state of Group
             properties:
+              email:
+                description: Email address of the group.
+                type: string
               fullName:
                 description: Full display name of the group.
                 type: string
-              parents:
-                description: The group's parent groups (that will be inherited by
-                  all persons part of present and child groups).
-                items:
-                  type: string
-                type: array
+              parent:
+                description: Parent group that will be inherited by all persons belonging
+                  to this group and its subgroups.
+                type: string
               type:
-                description: 'The group''s type (eg: team, role, stream).'
+                description: 'Type of group (eg: team, role, stream...)'
                 type: string
               values:
-                description: Custom values associated with group.
+                description: Arbitrary custom values associated with group.
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
             type: object

@@ -35,7 +35,11 @@ spec:
           spec:
             description: PersonSpec defines the desired state of Person
             properties:
+              email:
+                description: Email address of person
+                type: string
               firstName:
+                description: First name of person
                 type: string
               groups:
                 description: 'Groups this person belongs to (eg: teams, roles, streams...)'
@@ -43,11 +47,10 @@ spec:
                   type: string
                 type: array
               lastName:
-                type: string
-              middleName:
+                description: Last name of person
                 type: string
               values:
-                description: Custom values associated with person.
+                description: Arbitrary custom values associated with person.
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
             type: object

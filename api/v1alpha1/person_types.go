@@ -23,14 +23,19 @@ import (
 
 // PersonSpec defines the desired state of Person
 type PersonSpec struct {
+	// First name of person
 	FirstName string `json:"firstName,omitempty"`
-	LastName  string `json:"lastName,omitempty"`
-	Email     string `json:"email,omitempty"`
+
+	// Last name of person
+	LastName string `json:"lastName,omitempty"`
+
+	// Email address of person
+	Email string `json:"email,omitempty"`
 
 	// Groups this person belongs to (eg: teams, roles, streams...)
 	Groups []string `json:"groups,omitempty"`
 
-	// Custom values associated with person.
+	// Arbitrary custom values associated with person.
 	Values runtime.RawExtension `json:"values,omitempty"`
 }
 
