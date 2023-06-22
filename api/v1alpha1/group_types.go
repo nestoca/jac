@@ -56,9 +56,6 @@ type Group struct {
 
 	Spec   GroupSpec   `json:"spec,omitempty"`
 	Status GroupStatus `json:"status,omitempty"`
-
-	Yaml    string   `json:""`
-	Parents []*Group `json:""`
 }
 
 //+kubebuilder:object:root=true
@@ -72,8 +69,4 @@ type GroupList struct {
 
 func init() {
 	SchemeBuilder.Register(&Group{}, &GroupList{})
-}
-
-func (g *Group) GetYaml() string {
-	return g.Yaml
 }

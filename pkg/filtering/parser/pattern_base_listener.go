@@ -1,6 +1,7 @@
 // Code generated from Pattern.g4 by ANTLR 4.13.0. DO NOT EDIT.
 
 package parser // Pattern
+
 import "github.com/antlr4-go/antlr/v4"
 
 // BasePatternListener is a complete listener for a parse tree produced by PatternParser.

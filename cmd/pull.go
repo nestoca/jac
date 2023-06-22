@@ -1,23 +1,25 @@
-package main
+package cmd
 
 import (
 	"fmt"
-	"os"
-	"os/exec"
-	"path/filepath"
+	"github.com/nestoca/jac/pkg/git"
+	"github.com/spf13/cobra"
 )
 
-func gitPull(dir string) error {
-	// Ensure directory is a git repo
-	dotGitDir := filepath.Join(dir, ".git")
-	if _, err := os.Stat(dotGitDir); err != nil {
-		return fmt.Errorf("directory %q does appear to be a git repo", dir)
+// Create command to pull git repo at directory resolved from dirFlag
+func newPullCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "pull",
+		Short: "Pull git repo",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			dir, err := resolveDirectory(dirFlag)
+			if err != nil {
+				return fmt.Errorf("resolving directory: %w", err)
+			}
+
+			return git.Pull(dir)
+		},
 	}
 
-	// Exec git pull
-	cmd := exec.Command("git", "pull")
-	cmd.Dir = dir
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	return cmd.Run()
+	return cmd
 }

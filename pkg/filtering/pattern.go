@@ -1,9 +1,9 @@
-package main
+package filtering
 
 import (
 	"fmt"
 	"github.com/antlr4-go/antlr/v4"
-	"github.com/nestoca/jac/cmd/parser"
+	"github.com/nestoca/jac/pkg/filtering/parser"
 	"regexp"
 	"strings"
 )

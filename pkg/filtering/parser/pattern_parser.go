@@ -1,6 +1,7 @@
 // Code generated from Pattern.g4 by ANTLR 4.13.0. DO NOT EDIT.
 
 package parser // Pattern
+
 import (
 	"fmt"
 	"strconv"

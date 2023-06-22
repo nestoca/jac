@@ -1,8 +1,8 @@
-package main
+package printing
 
 import (
 	"fmt"
-	"github.com/nestoca/jac/api/v1alpha1"
+	"github.com/nestoca/jac/pkg/live"
 	"github.com/olekukonko/tablewriter"
 	"k8s.io/apimachinery/pkg/runtime"
 	"os"
@@ -20,7 +20,7 @@ type YamlResource interface {
 	GetYaml() string
 }
 
-func (p *Printer) PrintGroups(groups []*v1alpha1.Group) error {
+func (p *Printer) PrintGroups(groups []*live.Group) error {
 	if p.yaml {
 		return p.printGroupYaml(groups)
 	} else {
@@ -29,7 +29,7 @@ func (p *Printer) PrintGroups(groups []*v1alpha1.Group) error {
 	return nil
 }
 
-func (p *Printer) printGroupsTable(groups []*v1alpha1.Group) {
+func (p *Printer) printGroupsTable(groups []*live.Group) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 	table.SetHeaderLine(false)
@@ -52,7 +52,7 @@ func (p *Printer) printGroupsTable(groups []*v1alpha1.Group) {
 	table.Render()
 }
 
-func (p *Printer) printGroupYaml(groups []*v1alpha1.Group) error {
+func (p *Printer) printGroupYaml(groups []*live.Group) error {
 	for i, group := range groups {
 		if i > 0 {
 			println("---")
@@ -65,7 +65,7 @@ func (p *Printer) printGroupYaml(groups []*v1alpha1.Group) error {
 	return nil
 }
 
-func (p *Printer) PrintPeople(people []*v1alpha1.Person, showGroups bool) error {
+func (p *Printer) PrintPeople(people []*live.Person, showGroups bool) error {
 	if p.yaml {
 		return p.printPeopleYaml(people)
 	} else {
@@ -74,7 +74,7 @@ func (p *Printer) PrintPeople(people []*v1alpha1.Person, showGroups bool) error 
 	return nil
 }
 
-func (p *Printer) printPeopleTable(groups []*v1alpha1.Person, showGroups bool) {
+func (p *Printer) printPeopleTable(groups []*live.Person, showGroups bool) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 	table.SetHeaderLine(false)
@@ -116,7 +116,7 @@ func (p *Printer) printPeopleTable(groups []*v1alpha1.Person, showGroups bool) {
 	table.Render()
 }
 
-func (p *Printer) printPeopleYaml(people []*v1alpha1.Person) error {
+func (p *Printer) printPeopleYaml(people []*live.Person) error {
 	for i, person := range people {
 		if i > 0 {
 			println("---")

@@ -1,8 +1,9 @@
-package main
+package live
 
 import (
 	"fmt"
 	"github.com/nestoca/jac/api/v1alpha1"
+	"github.com/nestoca/jac/pkg/filtering"
 	"gopkg.in/godo.v2/glob"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
@@ -12,8 +13,8 @@ import (
 )
 
 type Catalog struct {
-	Groups []*v1alpha1.Group
-	People []*v1alpha1.Person
+	Groups []*Group
+	People []*Person
 
 	Scheme *runtime.Scheme
 }
@@ -31,7 +32,7 @@ func (c *Catalog) Load(globExpr string) error {
 	// Find all files matching the glob expression
 	fileAssets, _, err := glob.Glob([]string{globExpr})
 	if err != nil {
-		return fmt.Errorf("matching files with glob expression %s: %w", globFlag, err)
+		return fmt.Errorf("matching files with glob expression %s: %w", globExpr, err)
 	}
 
 	// Load all matched files
@@ -54,16 +55,22 @@ func (c *Catalog) Load(globExpr string) error {
 				return fmt.Errorf("converting object to Group: %w", err)
 			}
 			sort.Strings(crdObj.Spec.Parents)
-			crdObj.Yaml = strings.TrimSpace(string(data))
-			c.Groups = append(c.Groups, &crdObj)
+			group := &Group{
+				Group: crdObj,
+			}
+			group.Yaml = strings.TrimSpace(string(data))
+			c.Groups = append(c.Groups, group)
 		case "Person":
 			var crdObj v1alpha1.Person
 			if err := c.Scheme.Convert(obj, &crdObj, nil); err != nil {
 				return fmt.Errorf("converting object to Person: %w", err)
 			}
 			sort.Strings(crdObj.Spec.Groups)
-			crdObj.Yaml = strings.TrimSpace(string(data))
-			c.People = append(c.People, &crdObj)
+			person := &Person{
+				Person: crdObj,
+			}
+			person.Yaml = strings.TrimSpace(string(data))
+			c.People = append(c.People, person)
 		default:
 			return fmt.Errorf("unsupported CRD kind: %s", gvk.Kind)
 		}
@@ -99,7 +106,7 @@ func (c *Catalog) Load(globExpr string) error {
 
 const recursionLimit = 50
 
-func (c *Catalog) resolveInheritedGroups(person *v1alpha1.Person) {
+func (c *Catalog) resolveInheritedGroups(person *Person) {
 	var inheritedGroupNames []string
 	for _, group := range person.Groups {
 		inheritedGroupNames = append(inheritedGroupNames, c.resolveInheritedGroupsRecursively(person, group, 1)...)
@@ -109,7 +116,7 @@ func (c *Catalog) resolveInheritedGroups(person *v1alpha1.Person) {
 	person.AllGroupNames = append(person.Spec.Groups, inheritedGroupNames...)
 }
 
-func (c *Catalog) resolveInheritedGroupsRecursively(person *v1alpha1.Person, group *v1alpha1.Group, depth int) []string {
+func (c *Catalog) resolveInheritedGroupsRecursively(person *Person, group *Group, depth int) []string {
 	var inheritedGroupNames []string
 	if depth > recursionLimit {
 		panic(fmt.Sprintf("cyclic group parent references detected for person %s", person.Name))
@@ -121,11 +128,71 @@ func (c *Catalog) resolveInheritedGroupsRecursively(person *v1alpha1.Person, gro
 	return inheritedGroupNames
 }
 
-func (c *Catalog) GetGroup(name string) *v1alpha1.Group {
+func (c *Catalog) GetGroup(name string) *Group {
 	for _, group := range c.Groups {
 		if group.Name == name {
 			return group
 		}
 	}
 	return nil
+}
+
+func (c *Catalog) GetPeople(groupsPattern *filtering.PatternFilter, nameFilter *filtering.PatternFilter, findFilter *filtering.FindFilter, immediateGroupsOnly bool) []*Person {
+	var people []*Person
+	for _, person := range c.People {
+		// Filter by group
+		if groupsPattern != nil {
+			if immediateGroupsOnly {
+				if !groupsPattern.Match(person.Spec.Groups) {
+					continue
+				}
+			} else {
+				if !groupsPattern.Match(person.AllGroupNames) {
+					continue
+				}
+			}
+		}
+
+		// Filter by names
+		if nameFilter != nil && !nameFilter.Match([]string{person.Name}) {
+			continue
+		}
+
+		// Filter by find filter
+		if findFilter != nil &&
+			!findFilter.Match([]string{
+				person.Name,
+				person.Spec.FirstName,
+				person.Spec.LastName,
+				person.Spec.Email}) {
+			continue
+		}
+
+		people = append(people, person)
+	}
+	sort.Slice(people, func(i, j int) bool {
+		return people[i].Name < people[j].Name
+	})
+	return people
+}
+
+func (c *Catalog) GetGroups(typeFilter *filtering.PatternFilter, nameFilter *filtering.PatternFilter) []*Group {
+	var groups []*Group
+	for _, group := range c.Groups {
+		// Filter by type
+		if typeFilter != nil && !typeFilter.Match([]string{group.Spec.Type}) {
+			continue
+		}
+
+		// Filter by names
+		if nameFilter != nil && !nameFilter.Match([]string{group.Name}) {
+			continue
+		}
+
+		groups = append(groups, group)
+	}
+	sort.Slice(groups, func(i, j int) bool {
+		return groups[i].Name < groups[j].Name
+	})
+	return groups
 }

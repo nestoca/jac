@@ -1,6 +1,6 @@
 project_name: jac
 builds:
-  - dir: cmd
+  - dir: .
     env:
       - CGO_ENABLED=0
     goos:
