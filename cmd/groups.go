@@ -11,12 +11,18 @@ import (
 
 func newGroupsCmd() *cobra.Command {
 	typeFlag := ""
+	findFlag := ""
+	treeFlag := false
 	cmd := &cobra.Command{
 		Use:     "groups",
-		Short:   "Get groups",
+		Short:   "List groups",
 		Aliases: []string{"group"},
 		Args:    cobra.ArbitraryArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			if yamlFlag && treeFlag {
+				return fmt.Errorf("cannot use both --yaml and --tree")
+			}
+
 			// Resolve directory
 			dir, err := resolveDirectory(dirFlag)
 			if err != nil {
@@ -42,13 +48,19 @@ func newGroupsCmd() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("parsing name filter %q: %w", args, err)
 			}
+			var findFilter *filtering.FindFilter
+			if findFlag != "" {
+				findFilter = filtering.NewFindFilter(findFlag)
+			}
 
 			// Print groups
-			printer := printing.NewPrinter(yamlFlag)
-			return printer.PrintGroups(catalog.GetGroups(typeFilter, nameFilter))
+			printer := printing.NewPrinter(yamlFlag, treeFlag)
+			return printer.PrintGroups(catalog.RootGroups, catalog.GetGroups(typeFilter, nameFilter, findFilter))
 		},
 	}
 
-	cmd.Flags().StringVarP(&typeFlag, "type", "t", "", "Filter by group type")
+	cmd.Flags().StringVar(&typeFlag, "type", "", "Filter by group type")
+	cmd.Flags().BoolVarP(&treeFlag, "tree", "t", false, "Print groups as a tree")
+	cmd.Flags().StringVarP(&findFlag, "find", "f", "", "Find people via freeform text search in their first or last name, email or name identifier")
 	return cmd
 }

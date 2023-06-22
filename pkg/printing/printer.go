@@ -4,27 +4,31 @@ import (
 	"fmt"
 	"github.com/nestoca/jac/pkg/live"
 	"github.com/olekukonko/tablewriter"
+	"github.com/shivamMg/ppds/tree"
 	"k8s.io/apimachinery/pkg/runtime"
 	"os"
 )
 
 type Printer struct {
 	yaml bool
+	tree bool
 }
 
-func NewPrinter(yaml bool) *Printer {
-	return &Printer{yaml: yaml}
+func NewPrinter(yaml bool, tree bool) *Printer {
+	return &Printer{yaml: yaml, tree: tree}
 }
 
 type YamlResource interface {
 	GetYaml() string
 }
 
-func (p *Printer) PrintGroups(groups []*live.Group) error {
+func (p *Printer) PrintGroups(rootGroups []*live.Group, filteredGroups []*live.Group) error {
 	if p.yaml {
-		return p.printGroupYaml(groups)
+		return p.printGroupYaml(filteredGroups)
+	} else if p.tree {
+		p.printGroupTree(rootGroups, filteredGroups)
 	} else {
-		p.printGroupsTable(groups)
+		p.printGroupsTable(filteredGroups)
 	}
 	return nil
 }
@@ -136,4 +140,44 @@ func (p *Printer) printYaml(obj runtime.Object) error {
 	} else {
 		return fmt.Errorf("object is not a YamlResource")
 	}
+}
+
+type Node struct {
+	name     string
+	children []*Node
+}
+
+func (n *Node) Data() interface{} {
+	return n.name
+}
+
+func (n *Node) Children() (c []tree.Node) {
+	for _, child := range n.children {
+		c = append(c, tree.Node(child))
+	}
+	return
+}
+
+func (p *Printer) printGroupTree(rootGroups []*live.Group, filteredGroups []*live.Group) {
+	tree.PrintHr(newTreeForGroups("", rootGroups, filteredGroups))
+}
+
+func newTreeForGroup(group *live.Group, filteredGroups []*live.Group, highlight bool) *Node {
+	name := group.Spec.FullName
+	if highlight {
+		name = "\033[33m\033[1m" + name + "\033[0m"
+	}
+	return newTreeForGroups(name, group.Children, filteredGroups)
+}
+
+func newTreeForGroups(name string, groups []*live.Group, filteredGroups []*live.Group) *Node {
+	node := Node{name: name}
+	for _, child := range groups {
+		isIn := child.IsIn(filteredGroups)
+		isInOrHasAnyDescendant := isIn || child.HasAnyDescendant(filteredGroups)
+		if isInOrHasAnyDescendant {
+			node.children = append(node.children, newTreeForGroup(child, filteredGroups, isIn))
+		}
+	}
+	return &node
 }

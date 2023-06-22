@@ -99,6 +99,13 @@ Use `--yaml` or `-y` to output results as YAML instead of the default table form
 $ jac people -y
 ```
 
+## Output results as tree
+
+Use `--tree` or `-t` to output results as YAML instead of the default table format:
+```bash
+$ jac people -y
+```
+
 ## List all groups
 
 ```bash
@@ -113,9 +120,9 @@ $ jac groups <group1>,<group2>,...
 
 ## List groups of specific types
 
-Use `--type` or `-t` to filter by group type:
+Use `--type` to filter by group type:
 ```bash
-$ jac groups -t <type1>,<type2>,...
+$ jac groups --type <type1>,<type2>,...
 ```
 
 ## Pull latest version of git repo

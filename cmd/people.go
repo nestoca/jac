@@ -16,7 +16,7 @@ func newPeopleCmd() *cobra.Command {
 	showGroupsFlag := false
 	cmd := &cobra.Command{
 		Use:     "people",
-		Short:   "Get people",
+		Short:   "List people",
 		Aliases: []string{"person"},
 		Args:    cobra.ArbitraryArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -54,13 +54,13 @@ func newPeopleCmd() *cobra.Command {
 			}
 
 			// Print people
-			printer := printing.NewPrinter(yamlFlag)
+			printer := printing.NewPrinter(yamlFlag, false)
 			return printer.PrintPeople(catalog.GetPeople(groupFilter, nameFilter, findFilter, immediateFlag), showGroupsFlag)
 		},
 	}
 
 	cmd.Flags().StringVarP(&groupFlag, "group", "g", "", "Filter people by group")
-	cmd.Flags().StringVarP(&findFlag, "find", "f", "", "Find people by partial first or last name, email, or name identifier")
+	cmd.Flags().StringVarP(&findFlag, "find", "f", "", "Find people via freeform text search in their first or last name, email or name identifier")
 	cmd.Flags().BoolVarP(&showGroupsFlag, "show-groups", "G", false, "Show groups for people matching filter")
 	cmd.Flags().BoolVarP(&immediateFlag, "immediate", "i", false, "Consider only immediate groups in filter, not inherited ones")
 

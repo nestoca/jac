@@ -16,6 +16,8 @@ type Catalog struct {
 	Groups []*Group
 	People []*Person
 
+	RootGroups []*Group
+
 	Scheme *runtime.Scheme
 }
 
@@ -83,6 +85,9 @@ func (c *Catalog) Load(globExpr string) error {
 				return fmt.Errorf("group %s's parent does not exist: %s", group.Name, group.Spec.Parent)
 			}
 			group.Parent = parent
+			parent.Children = append(parent.Children, group)
+		} else {
+			c.RootGroups = append(c.RootGroups, group)
 		}
 	}
 
@@ -174,7 +179,7 @@ func (c *Catalog) GetPeople(groupsPattern *filtering.PatternFilter, nameFilter *
 	return people
 }
 
-func (c *Catalog) GetGroups(typeFilter *filtering.PatternFilter, nameFilter *filtering.PatternFilter) []*Group {
+func (c *Catalog) GetGroups(typeFilter *filtering.PatternFilter, nameFilter *filtering.PatternFilter, findFilter *filtering.FindFilter) []*Group {
 	var groups []*Group
 	for _, group := range c.Groups {
 		// Filter by type
@@ -184,6 +189,15 @@ func (c *Catalog) GetGroups(typeFilter *filtering.PatternFilter, nameFilter *fil
 
 		// Filter by names
 		if nameFilter != nil && !nameFilter.Match([]string{group.Name}) {
+			continue
+		}
+
+		// Filter by find filter
+		if findFilter != nil &&
+			!findFilter.Match([]string{
+				group.Name,
+				group.Spec.FullName,
+				group.Spec.Email}) {
 			continue
 		}
 

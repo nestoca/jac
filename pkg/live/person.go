@@ -7,10 +7,10 @@ import (
 type Person struct {
 	v1alpha1.Person
 
-	Yaml                 string   `json:""`
-	Groups               []*Group `json:""`
-	InheritedGroupsNames []string `json:""`
-	AllGroupNames        []string `json:""`
+	Yaml                 string
+	Groups               []*Group
+	InheritedGroupsNames []string
+	AllGroupNames        []string
 }
 
 func (p *Person) GetYaml() string {
