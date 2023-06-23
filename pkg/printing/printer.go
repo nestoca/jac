@@ -1,21 +1,37 @@
 package printing
 
+import (
+	"github.com/TwiN/go-color"
+	"github.com/nestoca/jac/pkg/live"
+	"regexp"
+	"strings"
+)
+
 type Printer struct {
-	yaml        bool
-	tree        bool
-	showNames   bool
-	showAll     bool
-	isFiltering bool
+	opts    *PrintOpts
+	catalog *live.Catalog
 }
 
 const recursionLimit = 50
 
-func NewPrinter(yaml, tree, showNames, showAll, isFiltering bool) *Printer {
-	return &Printer{yaml, tree, showNames, showAll, isFiltering}
+func NewPrinter(opts *PrintOpts, catalog *live.Catalog) *Printer {
+	return &Printer{
+		opts:    opts,
+		catalog: catalog,
+	}
 }
 
+var wordBoundariesRegex = regexp.MustCompile(`(\w+|\W+)`)
+
 func highlight(text string) string {
-	return "\033[33m\033[1m" + text + "\033[0m"
+	// All words/delimiters are colorized individually because
+	// colorizing the whole string as a whole does not display
+	// correctly when cells wrap in the table library.
+	tokens := wordBoundariesRegex.FindAllString(text, -1)
+	for i, token := range tokens {
+		tokens[i] = color.Colorize(color.Yellow, token)
+	}
+	return strings.Join(tokens, "")
 }
 
 func highlightAll(texts []string) (highlighted []string) {

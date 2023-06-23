@@ -8,18 +8,21 @@ import (
 	"os"
 )
 
-func (p *Printer) PrintPeople(rootPeople []*live.Person, allPeople []*live.Person, filteredPeople []*live.Person, showGroups bool) error {
-	if p.yaml {
-		return p.printPeopleYaml(filteredPeople)
-	} else if p.tree {
-		p.printPeopleTree(rootPeople, filteredPeople)
-	} else {
-		p.printPeopleTable(allPeople, filteredPeople, showGroups)
+func (p *Printer) PrintPeople(matchingPeople []*live.Person) error {
+	switch p.opts.Format {
+	case FormatTable:
+		p.printPeopleTable(matchingPeople)
+	case FormatYAML:
+		return p.printPeopleYaml(matchingPeople)
+	case FormatTree:
+		p.printPeopleTree(matchingPeople)
+	default:
+		return fmt.Errorf("unsupported format: %d", p.opts.Format)
 	}
 	return nil
 }
 
-func (p *Printer) printPeopleTable(allPeople []*live.Person, filteredPeople []*live.Person, showGroups bool) {
+func (p *Printer) printPeopleTable(matchingPeople []*live.Person) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 	table.SetHeaderLine(false)
@@ -30,16 +33,16 @@ func (p *Printer) printPeopleTable(allPeople []*live.Person, filteredPeople []*l
 	table.SetCenterSeparator("")
 
 	headers := []string{"NAME", "FIRST NAME", "LAST NAME", "EMAIL"}
-	if showGroups {
+	if p.opts.ShowGroupColumns {
 		headers = append(headers, "GROUPS")
 		headers = append(headers, "INHERITED GROUPS")
 	}
 	table.SetHeader(headers)
 
 	// Show all?
-	people := filteredPeople
-	if p.showAll {
-		people = allPeople
+	people := matchingPeople
+	if p.opts.ShowAll {
+		people = p.catalog.All.People
 	}
 
 	for _, person := range people {
@@ -57,14 +60,14 @@ func (p *Printer) printPeopleTable(allPeople []*live.Person, filteredPeople []*l
 
 		// Build row
 		row := []string{person.Name, person.Spec.FirstName, person.Spec.LastName, person.Spec.Email}
-		if showGroups {
+		if p.opts.ShowGroupColumns {
 			row = append(row, groupNames)
 			row = append(row, inheritedGroupNames)
 		}
 
 		// Highlight
-		if p.isFiltering && p.showAll {
-			if person.IsContainedIn(filteredPeople) {
+		if p.opts.HighlightMatches {
+			if person.IsContainedIn(matchingPeople) {
 				row = highlightAll(row)
 			}
 		}
@@ -89,28 +92,28 @@ func (p *Printer) printPeopleYaml(people []*live.Person) error {
 	return nil
 }
 
-func (p *Printer) printPeopleTree(rootPeople []*live.Person, filteredPeople []*live.Person) {
-	tree.PrintHr(p.newTreeForPeople("", rootPeople, filteredPeople, 1))
+func (p *Printer) printPeopleTree(matchingPeople []*live.Person) {
+	tree.PrintHr(p.newTreeForPeople("", p.catalog.Root.People, matchingPeople, 1))
 }
 
-func (p *Printer) newTreeForPerson(person *live.Person, filteredPeople []*live.Person, highlight bool, depth int) *Node {
+func (p *Printer) newTreeForPerson(person *live.Person, matchingPeople []*live.Person, isHighlighted bool, depth int) *Node {
 	if depth > recursionLimit {
 		panic(fmt.Sprintf("cyclic people parent references detected for person %s", person.Name))
 	}
-	name := person.GetDisplayName(p.showNames)
-	if p.isFiltering && highlight {
-		name = "\033[33m\033[1m" + name + "\033[0m"
+	name := person.GetDisplayName(p.opts.ShowIdentifierNames)
+	if p.opts.HighlightMatches && isHighlighted {
+		name = highlight(name)
 	}
-	return p.newTreeForPeople(name, person.Children, filteredPeople, depth)
+	return p.newTreeForPeople(name, person.Children, matchingPeople, depth)
 }
 
-func (p *Printer) newTreeForPeople(name string, people []*live.Person, filteredPeople []*live.Person, depth int) *Node {
+func (p *Printer) newTreeForPeople(name string, people []*live.Person, matchingPeople []*live.Person, depth int) *Node {
 	node := &Node{name: name}
 	for _, person := range people {
-		isMatching := person.IsContainedIn(filteredPeople)
-		isIncluded := p.showAll || isMatching || person.HasAnyDescendant(filteredPeople)
-		if isIncluded {
-			node.children = append(node.children, p.newTreeForPerson(person, filteredPeople, isMatching, depth+1))
+		isMatching := person.IsContainedIn(matchingPeople)
+		isIndirectlyMatching := p.opts.ShowAll || isMatching || person.HasAnyDescendant(matchingPeople)
+		if isIndirectlyMatching {
+			node.children = append(node.children, p.newTreeForPerson(person, matchingPeople, isMatching, depth+1))
 		}
 	}
 	return node

@@ -8,6 +8,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
 	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 )
@@ -34,6 +35,45 @@ func NewCatalog() *Catalog {
 	return &Catalog{
 		Scheme: sch,
 	}
+}
+
+func ResolveDirectory(dir string) (string, error) {
+	if dir != "" {
+		return dir, nil
+	}
+
+	// Resolve home directory
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", fmt.Errorf("getting home directory: %w", err)
+	}
+
+	// Check for directory in home
+	dir = filepath.Join(home, ".jac/repo")
+	if _, err := os.Stat(dir); err == nil {
+		return dir, nil
+	}
+
+	// Assume current directory
+	dir, err = os.Getwd()
+	if err != nil {
+		return "", fmt.Errorf("getting current directory: %w", err)
+	}
+	return dir, nil
+}
+
+func LoadCatalog(dir, glob string) (*Catalog, error) {
+	dir, err := ResolveDirectory(dir)
+	if err != nil {
+		return nil, fmt.Errorf("resolving directory: %w", err)
+	}
+	fullGlob := filepath.Join(dir, glob)
+
+	c := NewCatalog()
+	if err := c.Load(fullGlob); err != nil {
+		return nil, err
+	}
+	return c, nil
 }
 
 func (c *Catalog) Load(globExpr string) error {

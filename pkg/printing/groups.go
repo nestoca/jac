@@ -1,24 +1,28 @@
 package printing
 
 import (
+	"fmt"
 	"github.com/nestoca/jac/pkg/live"
 	"github.com/olekukonko/tablewriter"
 	"github.com/silphid/ppds/tree"
 	"os"
 )
 
-func (p *Printer) PrintGroups(rootGroups []*live.Group, allGroups []*live.Group, filteredGroups []*live.Group) error {
-	if p.yaml {
-		return p.printGroupYaml(filteredGroups)
-	} else if p.tree {
-		p.printGroupTree(rootGroups, filteredGroups)
-	} else {
-		p.printGroupsTable(allGroups, filteredGroups)
+func (p *Printer) PrintGroups(matchingGroups []*live.Group) error {
+	switch p.opts.Format {
+	case FormatTable:
+		p.printGroupsTable(matchingGroups)
+	case FormatYAML:
+		return p.printGroupsYaml(matchingGroups)
+	case FormatTree:
+		p.printGroupsTree(matchingGroups)
+	default:
+		return fmt.Errorf("unsupported format: %d", p.opts.Format)
 	}
 	return nil
 }
 
-func (p *Printer) printGroupsTable(allGroups []*live.Group, filteredGroups []*live.Group) {
+func (p *Printer) printGroupsTable(matchingGroups []*live.Group) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 	table.SetHeaderLine(false)
@@ -31,9 +35,9 @@ func (p *Printer) printGroupsTable(allGroups []*live.Group, filteredGroups []*li
 	table.SetHeader([]string{"NAME", "FULL NAME", "EMAIL", "TYPE", "PARENT"})
 
 	// Show all?
-	groups := filteredGroups
-	if p.showAll {
-		groups = allGroups
+	groups := matchingGroups
+	if p.opts.ShowAll {
+		groups = p.catalog.All.Groups
 	}
 
 	for _, group := range groups {
@@ -46,8 +50,8 @@ func (p *Printer) printGroupsTable(allGroups []*live.Group, filteredGroups []*li
 		row := []string{group.Name, group.GetDisplayName(false, false), group.Spec.Email, group.Spec.Type, parent}
 
 		// Highlight
-		if p.isFiltering && p.showAll {
-			if group.IsContainedIn(filteredGroups) {
+		if p.opts.HighlightMatches {
+			if group.IsContainedIn(matchingGroups) {
 				row = highlightAll(row)
 			}
 		}
@@ -59,7 +63,7 @@ func (p *Printer) printGroupsTable(allGroups []*live.Group, filteredGroups []*li
 	table.Render()
 }
 
-func (p *Printer) printGroupYaml(groups []*live.Group) error {
+func (p *Printer) printGroupsYaml(groups []*live.Group) error {
 	for i, group := range groups {
 		if i > 0 {
 			println("---")
@@ -72,25 +76,25 @@ func (p *Printer) printGroupYaml(groups []*live.Group) error {
 	return nil
 }
 
-func (p *Printer) printGroupTree(rootGroups []*live.Group, filteredGroups []*live.Group) {
-	tree.PrintHr(p.newTreeForGroups("", rootGroups, filteredGroups))
+func (p *Printer) printGroupsTree(matchingGroups []*live.Group) {
+	tree.PrintHr(p.newTreeForGroups("", p.catalog.Root.Groups, matchingGroups))
 }
 
-func (p *Printer) newTreeForGroup(group *live.Group, filteredGroups []*live.Group, isHighlighted bool) *Node {
-	name := group.GetDisplayName(p.showNames, false)
-	if p.isFiltering && isHighlighted {
+func (p *Printer) newTreeForGroup(group *live.Group, matchingGroups []*live.Group, isMatching bool) *Node {
+	name := group.GetDisplayName(p.opts.ShowIdentifierNames, false)
+	if p.opts.HighlightMatches && isMatching {
 		name = highlight(name)
 	}
-	return p.newTreeForGroups(name, group.Children, filteredGroups)
+	return p.newTreeForGroups(name, group.Children, matchingGroups)
 }
 
-func (p *Printer) newTreeForGroups(name string, groups []*live.Group, filteredGroups []*live.Group) *Node {
+func (p *Printer) newTreeForGroups(name string, groups []*live.Group, matchingGroups []*live.Group) *Node {
 	node := Node{name: name}
 	for _, child := range groups {
-		isMatching := child.IsContainedIn(filteredGroups)
-		isIncluded := p.showAll || isMatching || child.HasAnyDescendant(filteredGroups)
-		if isIncluded {
-			node.children = append(node.children, p.newTreeForGroup(child, filteredGroups, isMatching))
+		isMatching := child.IsContainedIn(matchingGroups)
+		isIndirectlyMatching := p.opts.ShowAll || isMatching || child.HasAnyDescendant(matchingGroups)
+		if isIndirectlyMatching {
+			node.children = append(node.children, p.newTreeForGroup(child, matchingGroups, isMatching))
 		}
 	}
 	return &node

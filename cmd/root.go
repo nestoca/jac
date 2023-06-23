@@ -5,8 +5,8 @@ import (
 )
 
 var (
-	globFlag string
-	dirFlag  string
+	catalogGlob string
+	catalogDir  string
 )
 
 func NewRootCmd(version string) *cobra.Command {
@@ -15,8 +15,8 @@ func NewRootCmd(version string) *cobra.Command {
 		Short: "CLI tool for managing people and groups as Infrastructure as Code",
 	}
 
-	rootCmd.PersistentFlags().StringVar(&globFlag, "glob", "**/*.yaml", "Glob expression for matching CRD files")
-	rootCmd.PersistentFlags().StringVarP(&dirFlag, "dir", "d", "", "Directory to search for CRD files (defaults to ~/.jac/repo)")
+	rootCmd.PersistentFlags().StringVar(&catalogGlob, "glob", "**/*.yaml", "Glob expression for matching CRD files")
+	rootCmd.PersistentFlags().StringVarP(&catalogDir, "dir", "d", "", "Directory to search for CRD files (defaults to ~/.jac/repo)")
 
 	rootCmd.AddCommand(newGroupsCmd())
 	rootCmd.AddCommand(newPeopleCmd())
