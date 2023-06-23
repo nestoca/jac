@@ -13,13 +13,18 @@ import (
 )
 
 type Catalog struct {
-	Groups []*Group
-	People []*Person
+	// All groups and people in the catalog
+	All GroupsAndPeople `json:"all,omitempty"`
 
-	RootGroups []*Group
-	RootPeople []*Person
+	// Groups and people with no parents
+	Root GroupsAndPeople `json:"root,omitempty"`
 
-	Scheme *runtime.Scheme
+	Scheme *runtime.Scheme `json:""`
+}
+
+type GroupsAndPeople struct {
+	Groups []*Group  `json:"groups,omitempty"`
+	People []*Person `json:"people,omitempty"`
 }
 
 func NewCatalog() *Catalog {
@@ -61,7 +66,7 @@ func (c *Catalog) Load(globExpr string) error {
 				Group: crdObj,
 			}
 			group.Yaml = strings.TrimSpace(string(data))
-			c.Groups = append(c.Groups, group)
+			c.All.Groups = append(c.All.Groups, group)
 		case "Person":
 			var crdObj v1alpha1.Person
 			if err := c.Scheme.Convert(obj, &crdObj, nil); err != nil {
@@ -72,14 +77,14 @@ func (c *Catalog) Load(globExpr string) error {
 				Person: crdObj,
 			}
 			person.Yaml = strings.TrimSpace(string(data))
-			c.People = append(c.People, person)
+			c.All.People = append(c.All.People, person)
 		default:
 			return fmt.Errorf("unsupported CRD kind: %s", gvk.Kind)
 		}
 	}
 
 	// Resolve group parents for all groups
-	for _, group := range c.Groups {
+	for _, group := range c.All.Groups {
 		if group.Spec.Parent != "" {
 			parent := c.GetGroup(group.Spec.Parent)
 			if parent == nil {
@@ -88,17 +93,17 @@ func (c *Catalog) Load(globExpr string) error {
 			group.Parent = parent
 			parent.Children = append(parent.Children, group)
 		} else {
-			c.RootGroups = append(c.RootGroups, group)
+			c.Root.Groups = append(c.Root.Groups, group)
 		}
 	}
 
 	// Sort root groups
-	sort.Slice(c.RootGroups, func(i, j int) bool {
-		return c.RootGroups[i].Name < c.RootGroups[j].Name
+	sort.Slice(c.Root.Groups, func(i, j int) bool {
+		return c.Root.Groups[i].Name < c.Root.Groups[j].Name
 	})
 
 	// Resolve groups, parent and children for all people
-	for _, person := range c.People {
+	for _, person := range c.All.People {
 		// Parent
 		if person.Spec.Parent != "" {
 			parent := c.GetPerson(person.Spec.Parent)
@@ -108,7 +113,7 @@ func (c *Catalog) Load(globExpr string) error {
 			person.Parent = parent
 			parent.Children = append(parent.Children, person)
 		} else {
-			c.RootPeople = append(c.RootPeople, person)
+			c.Root.People = append(c.Root.People, person)
 		}
 
 		// Groups
@@ -124,7 +129,7 @@ func (c *Catalog) Load(globExpr string) error {
 	}
 
 	// Sort people children
-	for _, person := range c.People {
+	for _, person := range c.All.People {
 		sort.Slice(person.Children, func(i, j int) bool {
 			return person.Children[i].Name < person.Children[j].Name
 		})
@@ -158,7 +163,7 @@ func (c *Catalog) resolveInheritedGroupsRecursively(person *Person, group *Group
 }
 
 func (c *Catalog) GetGroup(name string) *Group {
-	for _, group := range c.Groups {
+	for _, group := range c.All.Groups {
 		if group.Name == name {
 			return group
 		}
@@ -167,7 +172,7 @@ func (c *Catalog) GetGroup(name string) *Group {
 }
 
 func (c *Catalog) GetPerson(name string) *Person {
-	for _, person := range c.People {
+	for _, person := range c.All.People {
 		if person.Name == name {
 			return person
 		}
@@ -177,7 +182,7 @@ func (c *Catalog) GetPerson(name string) *Person {
 
 func (c *Catalog) GetPeople(groupsPattern *filtering.PatternFilter, nameFilter *filtering.PatternFilter, findFilter *filtering.FindFilter, immediateGroupsOnly bool) []*Person {
 	var people []*Person
-	for _, person := range c.People {
+	for _, person := range c.All.People {
 		// Filter by group
 		if groupsPattern != nil {
 			if immediateGroupsOnly {
@@ -216,7 +221,7 @@ func (c *Catalog) GetPeople(groupsPattern *filtering.PatternFilter, nameFilter *
 
 func (c *Catalog) GetGroups(typeFilter *filtering.PatternFilter, nameFilter *filtering.PatternFilter, findFilter *filtering.FindFilter) []*Group {
 	var groups []*Group
-	for _, group := range c.Groups {
+	for _, group := range c.All.Groups {
 		// Filter by type
 		if typeFilter != nil && !typeFilter.Match([]string{group.Spec.Type}) {
 			continue

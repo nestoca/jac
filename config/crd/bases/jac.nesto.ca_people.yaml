@@ -36,29 +36,28 @@ spec:
             description: PersonSpec defines the desired state of Person
             properties:
               email:
-                description: Email address of person
+                description: Email address of person.
                 type: string
               firstName:
-                description: First name of person
+                description: First name of person.
                 type: string
               groups:
-                description: 'Groups this person belongs to (eg: teams, roles, streams...)'
+                description: 'Groups this person belongs to (eg: teams, roles, streams...).'
                 items:
                   type: string
                 type: array
               lastName:
-                description: Last name of person
+                description: Last name of person.
+                type: string
+              parent:
+                description: Lead or manager this person is reporting to, according
+                  to org chart.
                 type: string
               values:
                 description: Arbitrary custom values associated with person.
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
             type: object
-          status:
-            description: PersonStatus defines the observed state of Person
-            type: object
         type: object
     served: true
     storage: true
-    subresources:
-      status: {}

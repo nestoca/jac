@@ -39,7 +39,7 @@ func newGroupsCmd() *cobra.Command {
 			catalog := live.NewCatalog()
 			err = catalog.Load(glob)
 			if err != nil {
-				return fmt.Errorf("loading CRDs: %w\n", err)
+				return fmt.Errorf("loading catalog: %w\n", err)
 			}
 
 			// Create filters
@@ -59,7 +59,7 @@ func newGroupsCmd() *cobra.Command {
 			// Print groups
 			isFiltering := typeFlag != "" || len(args) > 0 || findFlag != ""
 			printer := printing.NewPrinter(yamlFlag, treeFlag, showNamesFlag, showAllFlag, isFiltering)
-			return printer.PrintGroups(catalog.RootGroups, catalog.Groups, catalog.GetGroups(typeFilter, nameFilter, findFilter))
+			return printer.PrintGroups(catalog.Root.Groups, catalog.All.Groups, catalog.GetGroups(typeFilter, nameFilter, findFilter))
 		},
 	}
 

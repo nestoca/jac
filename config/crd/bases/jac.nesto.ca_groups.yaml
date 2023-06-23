@@ -36,7 +36,10 @@ spec:
             description: GroupSpec defines the desired state of Group
             properties:
               email:
-                description: Email address of the group.
+                description: Optional email address of the group.
+                type: string
+              emoji:
+                description: Optional emoji to picture group in a more visual way.
                 type: string
               fullName:
                 description: Full display name of the group.
@@ -53,11 +56,6 @@ spec:
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
             type: object
-          status:
-            description: GroupStatus defines the observed state of Group
-            type: object
         type: object
     served: true
     storage: true
-    subresources:
-      status: {}

@@ -42,7 +42,7 @@ func newPeopleCmd() *cobra.Command {
 			catalog := live.NewCatalog()
 			err = catalog.Load(glob)
 			if err != nil {
-				return fmt.Errorf("loading CRDs: %w\n", err)
+				return fmt.Errorf("loading catalog: %w\n", err)
 			}
 
 			// Create filters
@@ -65,7 +65,7 @@ func newPeopleCmd() *cobra.Command {
 			// Print people
 			isFiltering := len(args) > 0 || findFlag != "" || groupFlag != ""
 			printer := printing.NewPrinter(yamlFlag, treeFlag, showNamesFlag, showAllFlag, isFiltering)
-			return printer.PrintPeople(catalog.RootPeople, catalog.People, catalog.GetPeople(groupFilter, nameFilter, findFilter, immediateFlag), showGroupsFlag)
+			return printer.PrintPeople(catalog.Root.People, catalog.All.People, catalog.GetPeople(groupFilter, nameFilter, findFilter, immediateFlag), showGroupsFlag)
 		},
 	}
 

@@ -42,22 +42,14 @@ type GroupSpec struct {
 	Values runtime.RawExtension `json:"values,omitempty"`
 }
 
-// GroupStatus defines the observed state of Group
-type GroupStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-}
-
 //+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
 
 // Group is the Schema for the groups API
 type Group struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   GroupSpec   `json:"spec,omitempty"`
-	Status GroupStatus `json:"status,omitempty"`
+	Spec GroupSpec `json:"spec,omitempty"`
 }
 
 //+kubebuilder:object:root=true

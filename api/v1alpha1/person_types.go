@@ -42,22 +42,14 @@ type PersonSpec struct {
 	Values runtime.RawExtension `json:"values,omitempty"`
 }
 
-// PersonStatus defines the observed state of Person
-type PersonStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-}
-
 //+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
 
 // Person is the Schema for the people API
 type Person struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   PersonSpec   `json:"spec,omitempty"`
-	Status PersonStatus `json:"status,omitempty"`
+	Spec PersonSpec `json:"spec,omitempty"`
 }
 
 //+kubebuilder:object:root=true
