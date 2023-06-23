@@ -19,9 +19,39 @@ func (p *Person) GetYaml() string {
 	return p.Yaml
 }
 
-func (g *Person) GetDisplayName(showNames bool) string {
-	if !showNames && g.Spec.FirstName != "" {
-		return g.Spec.FirstName + " " + g.Spec.LastName
+func (p *Person) GetDisplayName(showNames bool) string {
+	if !showNames && p.Spec.FirstName != "" {
+		return p.Spec.FirstName + " " + p.Spec.LastName
 	}
-	return g.Name
+	return p.Name
+}
+
+func (p *Person) HasDescendant(person *Person) bool {
+	for _, child := range p.Children {
+		if child.Name == person.Name {
+			return true
+		}
+		if child.HasDescendant(person) {
+			return true
+		}
+	}
+	return false
+}
+
+func (p *Person) IsContainedIn(people []*Person) bool {
+	for _, person := range people {
+		if p.Name == person.Name {
+			return true
+		}
+	}
+	return false
+}
+
+func (p *Person) HasAnyDescendant(people []*Person) bool {
+	for _, person := range people {
+		if p.HasDescendant(person) {
+			return true
+		}
+	}
+	return false
 }

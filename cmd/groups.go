@@ -12,8 +12,10 @@ import (
 func newGroupsCmd() *cobra.Command {
 	typeFlag := ""
 	findFlag := ""
+	yamlFlag := false
 	treeFlag := false
-	namesFlag := false
+	showAllFlag := false
+	showNamesFlag := false
 	cmd := &cobra.Command{
 		Use:     "groups",
 		Short:   "List groups",
@@ -56,14 +58,16 @@ func newGroupsCmd() *cobra.Command {
 
 			// Print groups
 			isFiltering := typeFlag != "" || len(args) > 0 || findFlag != ""
-			printer := printing.NewPrinter(yamlFlag, treeFlag, namesFlag, isFiltering)
-			return printer.PrintGroups(catalog.RootGroups, catalog.GetGroups(typeFilter, nameFilter, findFilter))
+			printer := printing.NewPrinter(yamlFlag, treeFlag, showNamesFlag, showAllFlag, isFiltering)
+			return printer.PrintGroups(catalog.RootGroups, catalog.Groups, catalog.GetGroups(typeFilter, nameFilter, findFilter))
 		},
 	}
 
-	cmd.Flags().StringVar(&typeFlag, "type", "", "Filter by group type")
+	cmd.Flags().StringVarP(&typeFlag, "type", "T", "", "Filter by group type")
+	cmd.Flags().BoolVarP(&yamlFlag, "yaml", "y", false, "Print groups as YAML")
 	cmd.Flags().BoolVarP(&treeFlag, "tree", "t", false, "Print groups as a tree")
-	cmd.Flags().StringVarP(&findFlag, "find", "f", "", "Find people via freeform text search in their first or last name, email or name identifier")
-	cmd.Flags().BoolVarP(&namesFlag, "show-names", "N", false, "Show identifier names instead of full names")
+	cmd.Flags().StringVarP(&findFlag, "find", "f", "", "Find people with free-text search in their first or last name, email or name identifier")
+	cmd.Flags().BoolVarP(&showNamesFlag, "show-names", "N", false, "Show identifier names instead of full names")
+	cmd.Flags().BoolVarP(&showAllFlag, "show-all", "A", false, "Show all groups in tree, regardless of filter, highlighting matches")
 	return cmd
 }

@@ -12,14 +12,23 @@ import (
 func newPeopleCmd() *cobra.Command {
 	groupFlag := ""
 	findFlag := ""
+	yamlFlag := false
+	treeFlag := false
+	showAllFlag := false
 	immediateFlag := false
 	showGroupsFlag := false
+	showNamesFlag := false
 	cmd := &cobra.Command{
 		Use:     "people",
 		Short:   "List people",
 		Aliases: []string{"person"},
 		Args:    cobra.ArbitraryArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			// Validate inputs
+			if yamlFlag && treeFlag {
+				return fmt.Errorf("cannot use both --yaml and --tree")
+			}
+
 			// Resolve directory
 			dir, err := resolveDirectory(dirFlag)
 			if err != nil {
@@ -54,15 +63,19 @@ func newPeopleCmd() *cobra.Command {
 			}
 
 			// Print people
-			isFiltering := len(args) > 0 || findFlag != ""
-			printer := printing.NewPrinter(yamlFlag, false, false, isFiltering)
-			return printer.PrintPeople(catalog.GetPeople(groupFilter, nameFilter, findFilter, immediateFlag), showGroupsFlag)
+			isFiltering := len(args) > 0 || findFlag != "" || groupFlag != ""
+			printer := printing.NewPrinter(yamlFlag, treeFlag, showNamesFlag, showAllFlag, isFiltering)
+			return printer.PrintPeople(catalog.RootPeople, catalog.People, catalog.GetPeople(groupFilter, nameFilter, findFilter, immediateFlag), showGroupsFlag)
 		},
 	}
 
 	cmd.Flags().StringVarP(&groupFlag, "group", "g", "", "Filter people by group")
-	cmd.Flags().StringVarP(&findFlag, "find", "f", "", "Find people via freeform text search in their first or last name, email or name identifier")
+	cmd.Flags().StringVarP(&findFlag, "find", "f", "", "Find people with free-text search in their first or last name, email or name identifier")
+	cmd.Flags().BoolVarP(&yamlFlag, "yaml", "y", false, "Print people as YAML")
+	cmd.Flags().BoolVarP(&treeFlag, "tree", "t", false, "Print people as a tree")
 	cmd.Flags().BoolVarP(&showGroupsFlag, "show-groups", "G", false, "Show groups for people matching filter")
+	cmd.Flags().BoolVarP(&showNamesFlag, "show-names", "N", false, "Show identifier names instead of full names")
+	cmd.Flags().BoolVarP(&showAllFlag, "show-all", "A", false, "Show all people in tree, regardless of filter, highlighting matches")
 	cmd.Flags().BoolVarP(&immediateFlag, "immediate", "i", false, "Consider only immediate groups in filter, not inherited ones")
 
 	return cmd

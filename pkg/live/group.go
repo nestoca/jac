@@ -14,9 +14,9 @@ func (g *Group) GetYaml() string {
 	return g.Yaml
 }
 
-func (g *Group) GetDisplayName(showNames bool) string {
+func (g *Group) GetDisplayName(showNames, allowEmoji bool) string {
 	if !showNames && g.Spec.FullName != "" {
-		if g.Spec.Emoji != "" {
+		if allowEmoji && g.Spec.Emoji != "" {
 			return g.Spec.Emoji + " " + g.Spec.FullName
 		}
 		return g.Spec.FullName
@@ -36,7 +36,7 @@ func (g *Group) HasDescendant(group *Group) bool {
 	return false
 }
 
-func (g *Group) IsIn(groups []*Group) bool {
+func (g *Group) IsContainedIn(groups []*Group) bool {
 	for _, group := range groups {
 		if g.Name == group.Name {
 			return true

@@ -17,6 +17,7 @@ type Catalog struct {
 	People []*Person
 
 	RootGroups []*Group
+	RootPeople []*Person
 
 	Scheme *runtime.Scheme
 }
@@ -91,8 +92,26 @@ func (c *Catalog) Load(globExpr string) error {
 		}
 	}
 
-	// Resolve groups for all people
+	// Sort root groups
+	sort.Slice(c.RootGroups, func(i, j int) bool {
+		return c.RootGroups[i].Name < c.RootGroups[j].Name
+	})
+
+	// Resolve groups, parent and children for all people
 	for _, person := range c.People {
+		// Parent
+		if person.Spec.Parent != "" {
+			parent := c.GetPerson(person.Spec.Parent)
+			if parent == nil {
+				return fmt.Errorf("person %s's parent does not exist: %s", person.Name, person.Spec.Parent)
+			}
+			person.Parent = parent
+			parent.Children = append(parent.Children, person)
+		} else {
+			c.RootPeople = append(c.RootPeople, person)
+		}
+
+		// Groups
 		sort.Strings(person.Spec.Groups)
 		for _, groupName := range person.Spec.Groups {
 			group := c.GetGroup(groupName)
@@ -102,6 +121,13 @@ func (c *Catalog) Load(globExpr string) error {
 			person.Groups = append(person.Groups, group)
 		}
 		c.resolveInheritedGroups(person)
+	}
+
+	// Sort people children
+	for _, person := range c.People {
+		sort.Slice(person.Children, func(i, j int) bool {
+			return person.Children[i].Name < person.Children[j].Name
+		})
 	}
 
 	return nil
@@ -135,6 +161,15 @@ func (c *Catalog) GetGroup(name string) *Group {
 	for _, group := range c.Groups {
 		if group.Name == name {
 			return group
+		}
+	}
+	return nil
+}
+
+func (c *Catalog) GetPerson(name string) *Person {
+	for _, person := range c.People {
+		if person.Name == name {
+			return person
 		}
 	}
 	return nil

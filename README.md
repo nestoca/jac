@@ -71,10 +71,11 @@ $ jac people
 $ jac people <person1>,<person2>,...
 ```
 
-## Find people via freeform text search
+## Find people with free-text search
 
-Use `--find` or `-f` to find people via freeform text search in their first or last name, email or name identifier: 
+Use `--find` or `-f` to find people with free-text search in their first or last name, email or name identifier: 
 ```bash
+$ jac people --find alice
 $ jac people -f alice
 ```
 
@@ -82,6 +83,7 @@ $ jac people -f alice
 
 Use `--group` or `-g` to filter by group:
 ```bash
+$ jac people --group <group1>,<group2>,...
 $ jac people -g <group1>,<group2>,...
 ```
 
@@ -89,13 +91,23 @@ $ jac people -g <group1>,<group2>,...
 
 Use `--show-groups` or `-G` to filter by group:
 ```bash
+$ jac people --show-groups
 $ jac people -G
+```
+
+## List people, displaying names
+
+Use `--show-names` or `-N` to display identifier names instead of full names:
+```bash
+$ jac people --show-names
+$ jac people -N
 ```
 
 ## Output results as YAML
 
 Use `--yaml` or `-y` to output results as YAML instead of the default table format:
 ```bash
+$ jac people --yaml
 $ jac people -y
 ```
 
@@ -103,7 +115,24 @@ $ jac people -y
 
 Use `--tree` or `-t` to output results as YAML instead of the default table format:
 ```bash
-$ jac people -y
+$ jac people --tree
+$ jac people -t
+```
+
+## Highlight specific people in tree
+
+Use `--show-all` or `-A` to show all people in tree, highlighting specific people with free-text search:
+```bash
+$ jac people --show-all --tree --find <search>
+$ jac people -Atf <search>
+```
+Without `--show-all`, only people matching the search will be shown, along with their parents.
+
+## Highlight people of a specific team in tree
+
+```bash
+$ jac people --show-all --tree --group "team-sre"
+$ jac people -Atg "team-sre"
 ```
 
 ## List all groups
@@ -123,6 +152,7 @@ $ jac groups <group1>,<group2>,...
 Use `--type` to filter by group type:
 ```bash
 $ jac groups --type <type1>,<type2>,...
+$ jac groups -t <type1>,<type2>,...
 ```
 
 ## Pull latest version of git repo
@@ -205,7 +235,7 @@ That inheritance allows to reduce repetition in your YAML files and keep them DR
 ## Group types
 
 You can optionally specify a `type` property for a group, which can then be used to filter groups by type using the
-`--type` or `-t` flag.
+`--type` or `-T` flag.
 
 However, it is recommended to prefix group names with their type (eg: `stream-foo`, `team-bar`, `role-baz`) and rather
 rely on wildcards for filtering them (eg: `stream-*`, `team-*`, `role-*`). The `type` property is rather intended for
