@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/nestoca/jac/pkg/config"
 	"github.com/nestoca/jac/pkg/git"
-	"github.com/nestoca/jac/pkg/live"
 	"github.com/spf13/cobra"
 )
 
@@ -13,12 +13,11 @@ func newPullCmd() *cobra.Command {
 		Use:   "pull",
 		Short: "Pull git repo",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			dir, err := live.ResolveDirectory(catalogDir)
+			cfg, err := config.LoadConfig(catalogDir)
 			if err != nil {
-				return fmt.Errorf("resolving directory: %w", err)
+				return fmt.Errorf("loading config: %w\n", err)
 			}
-
-			return git.Pull(dir)
+			return git.Pull(cfg.Dir)
 		},
 	}
 

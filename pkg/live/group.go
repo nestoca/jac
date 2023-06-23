@@ -8,9 +8,12 @@ import (
 type Group struct {
 	v1alpha1.Group
 
-	Yaml     string `json:""`
-	Parent   *Group
-	Children []*Group
+	Yaml            string `json:""`
+	Parent          *Group
+	Children        []*Group
+	Members         []*Person
+	IndirectMembers []*Person
+	AllMembers      []*Person
 }
 
 func (g *Group) GetYaml() string {

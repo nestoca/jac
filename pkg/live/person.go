@@ -27,19 +27,28 @@ func (p *Person) GetDisplayName(showNames bool) string {
 	return p.Name
 }
 
-func (p *Person) HasDescendant(person *Person) bool {
-	for _, child := range p.Children {
-		if child.Name == person.Name {
-			return true
-		}
-		if child.HasDescendant(person) {
+func (p *Person) IsMemberOfGroup(group *Group) bool {
+	for _, g := range p.Groups {
+		if g.Name == group.Name {
 			return true
 		}
 	}
 	return false
 }
 
-func (p *Person) IsContainedIn(people []*Person) bool {
+func (p *Person) HasAsDescendant(person *Person) bool {
+	for _, child := range p.Children {
+		if child.Name == person.Name {
+			return true
+		}
+		if child.HasAsDescendant(person) {
+			return true
+		}
+	}
+	return false
+}
+
+func (p *Person) IsAmongst(people []*Person) bool {
 	for _, person := range people {
 		if p.Name == person.Name {
 			return true
@@ -48,9 +57,9 @@ func (p *Person) IsContainedIn(people []*Person) bool {
 	return false
 }
 
-func (p *Person) HasAnyDescendant(people []*Person) bool {
+func (p *Person) HasAnyOfThoseAsDescendant(people []*Person) bool {
 	for _, person := range people {
-		if p.HasDescendant(person) {
+		if p.HasAsDescendant(person) {
 			return true
 		}
 	}

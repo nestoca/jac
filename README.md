@@ -24,11 +24,11 @@ Download from GitHub [releases](https://github.com/nestoca/jac/releases/latest) 
 
 ## Cloning your people git repo
 
-Jac commands will look for a git repo at `~/.jac/repo` and fallback to using current directory as default.
+Jac commands will look for a git repo at `~/.jac` and fallback to using current directory as default.
 You can override this with the `--dir` or `-d` flag.
 
 ```bash
-$ git clone git@github.com:<repo-owner>/<people-repo>.git ~/.jac/repo
+$ git clone git@github.com:<repo-owner>/<people-repo>.git ~/.jac
 ```
 
 Jac commands will look for people and groups YAML files in that repo using the `**/*.yaml` glob pattern.
@@ -293,3 +293,27 @@ For example:
 │   │   ├── team.yaml                   // team-platform
 │   │   └── ... 
 ```
+
+# How jac resolves directory and glob pattern
+
+When you run `jac` it looks for `.jacrc` file in the following locations:
+
+1. Directory specified explicitly via `--dir` (or `-d`) flag
+2. Current directory
+3. Your `$HOME` directory
+4. Your `$HOME/.jac` directory
+
+That file is in YAML format and can contain the following properties:
+
+```yaml
+dir: path/to/directory
+glob: "**/*.yaml"
+```
+
+The `dir` property is optional, can be an absolute path, or be relative to the current
+config file's directory. If specified, Jac will use that directory combined with the `glob`
+expression to find and load its YAML files.  If not specified, Jac will use the current
+config file's directory instead. If Jac finds another config file in that directory, it will
+follow the same process over and over until no further config files and directories are found.
+
+The `glob` is optional, defaults to `**/*.yaml`

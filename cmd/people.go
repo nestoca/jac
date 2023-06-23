@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/nestoca/jac/pkg/config"
 	"github.com/nestoca/jac/pkg/filtering"
 	"github.com/nestoca/jac/pkg/live"
 	"github.com/nestoca/jac/pkg/printing"
@@ -28,7 +29,13 @@ func newPeopleCmd() *cobra.Command {
 			highlightMatches := showAll && (len(args) > 0 || findPattern != "" || groupPattern != "")
 			opts := printing.NewPrintOpts(formatTree, formatYaml, showAll, showGroupColumns, showNameIdentifiers, highlightMatches)
 
-			catalog, err := live.LoadCatalog(catalogDir, catalogGlob)
+			// Load config
+			cfg, err := config.LoadConfig(catalogDir)
+			if err != nil {
+				return fmt.Errorf("loading config: %w\n", err)
+			}
+
+			catalog, err := live.LoadCatalog(cfg.Dir, cfg.Glob)
 			if err != nil {
 				return fmt.Errorf("loading catalog: %w\n", err)
 			}

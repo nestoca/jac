@@ -67,7 +67,7 @@ func (p *Printer) printPeopleTable(matchingPeople []*live.Person) {
 
 		// Highlight
 		if p.opts.HighlightMatches {
-			if person.IsContainedIn(matchingPeople) {
+			if person.IsAmongst(matchingPeople) {
 				row = highlightAll(row)
 			}
 		}
@@ -110,8 +110,8 @@ func (p *Printer) newTreeForPerson(person *live.Person, matchingPeople []*live.P
 func (p *Printer) newTreeForPeople(name string, people []*live.Person, matchingPeople []*live.Person, depth int) *Node {
 	node := &Node{name: name}
 	for _, person := range people {
-		isMatching := person.IsContainedIn(matchingPeople)
-		isIndirectlyMatching := p.opts.ShowAll || isMatching || person.HasAnyDescendant(matchingPeople)
+		isMatching := person.IsAmongst(matchingPeople)
+		isIndirectlyMatching := p.opts.ShowAll || isMatching || person.HasAnyOfThoseAsDescendant(matchingPeople)
 		if isIndirectlyMatching {
 			node.children = append(node.children, p.newTreeForPerson(person, matchingPeople, isMatching, depth+1))
 		}

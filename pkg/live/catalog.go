@@ -37,36 +37,7 @@ func NewCatalog() *Catalog {
 	}
 }
 
-func ResolveDirectory(dir string) (string, error) {
-	if dir != "" {
-		return dir, nil
-	}
-
-	// Resolve home directory
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return "", fmt.Errorf("getting home directory: %w", err)
-	}
-
-	// Check for directory in home
-	dir = filepath.Join(home, ".jac/repo")
-	if _, err := os.Stat(dir); err == nil {
-		return dir, nil
-	}
-
-	// Assume current directory
-	dir, err = os.Getwd()
-	if err != nil {
-		return "", fmt.Errorf("getting current directory: %w", err)
-	}
-	return dir, nil
-}
-
 func LoadCatalog(dir, glob string) (*Catalog, error) {
-	dir, err := ResolveDirectory(dir)
-	if err != nil {
-		return nil, fmt.Errorf("resolving directory: %w", err)
-	}
 	fullGlob := filepath.Join(dir, glob)
 
 	c := NewCatalog()
@@ -81,6 +52,9 @@ func (c *Catalog) Load(globExpr string) error {
 	fileAssets, _, err := glob.Glob([]string{globExpr})
 	if err != nil {
 		return fmt.Errorf("matching files with glob expression %s: %w", globExpr, err)
+	}
+	if len(fileAssets) == 0 {
+		return fmt.Errorf("no files found matching glob expression %q", globExpr)
 	}
 
 	// Load all matched files
@@ -164,8 +138,13 @@ func (c *Catalog) Load(globExpr string) error {
 				return fmt.Errorf("person %s's group does not exist: %s", person.Name, groupName)
 			}
 			person.Groups = append(person.Groups, group)
+			group.Members = append(group.Members, person)
+			group.AllMembers = append(group.AllMembers, person)
 		}
 		c.resolveInheritedGroups(person)
+		for _, group := range person.InheritedGroups {
+			group.IndirectMembers = append(group.IndirectMembers, person)
+		}
 	}
 
 	// Sort people children
@@ -193,6 +172,7 @@ func (c *Catalog) resolveInheritedGroups(person *Person) {
 	for _, group := range person.AllGroups {
 		person.AllGroupNames = append(person.AllGroupNames, group.Name)
 	}
+
 }
 
 func (c *Catalog) resolveInheritedGroupsRecursively(person *Person, group *Group, depth int) []*Group {
