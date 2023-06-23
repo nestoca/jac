@@ -47,7 +47,7 @@ func (p *Printer) printGroupsTable(matchingGroups []*live.Group) {
 		}
 
 		// Build row
-		row := []string{group.Name, group.GetDisplayName(false, false), group.Spec.Email, group.Spec.Type, parent}
+		row := []string{group.Name, group.GetDisplayName(false, true), group.Spec.Email, group.Spec.Type, parent}
 
 		// Highlight
 		if p.opts.HighlightMatches {
@@ -81,7 +81,7 @@ func (p *Printer) printGroupsTree(matchingGroups []*live.Group) {
 }
 
 func (p *Printer) newTreeForGroup(group *live.Group, matchingGroups []*live.Group, isMatching bool) *Node {
-	name := group.GetDisplayName(p.opts.ShowIdentifierNames, false)
+	name := group.GetDisplayName(p.opts.ShowIdentifierNames, true)
 	if p.opts.HighlightMatches && isMatching {
 		name = highlight(name)
 	}

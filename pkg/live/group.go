@@ -1,6 +1,9 @@
 package live
 
-import "github.com/nestoca/jac/api/v1alpha1"
+import (
+	"github.com/nestoca/jac/api/v1alpha1"
+	"strings"
+)
 
 type Group struct {
 	v1alpha1.Group
@@ -15,11 +18,13 @@ func (g *Group) GetYaml() string {
 }
 
 func (g *Group) GetDisplayName(showNames, allowEmoji bool) string {
+	nonBreakingSpace := "\u00a0"
 	if !showNames && g.Spec.FullName != "" {
-		if allowEmoji && g.Spec.Emoji != "" {
-			return g.Spec.Emoji + " " + g.Spec.FullName
-		}
-		return g.Spec.FullName
+		nonBreakingFullName := strings.ReplaceAll(g.Spec.FullName, " ", nonBreakingSpace)
+		//if allowEmoji && g.Spec.Emoji != "" {
+		//	return g.Spec.Emoji + nonBreakingSpace + nonBreakingFullName
+		//}
+		return nonBreakingFullName
 	}
 	return g.Name
 }

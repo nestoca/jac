@@ -181,25 +181,30 @@ func (c *Catalog) Load(globExpr string) error {
 const recursionLimit = 50
 
 func (c *Catalog) resolveInheritedGroups(person *Person) {
-	var inheritedGroupNames []string
+	var inheritedGroups []*Group
 	for _, group := range person.Groups {
-		inheritedGroupNames = append(inheritedGroupNames, c.resolveInheritedGroupsRecursively(person, group, 1)...)
+		inheritedGroups = append(inheritedGroups, c.resolveInheritedGroupsRecursively(person, group, 1)...)
 	}
-	sort.Strings(inheritedGroupNames)
-	person.InheritedGroupsNames = inheritedGroupNames
-	person.AllGroupNames = append(person.Spec.Groups, inheritedGroupNames...)
+	sort.Slice(inheritedGroups, func(i, j int) bool {
+		return inheritedGroups[i].Name < inheritedGroups[j].Name
+	})
+	person.InheritedGroups = inheritedGroups
+	person.AllGroups = append(person.Groups, inheritedGroups...)
+	for _, group := range person.AllGroups {
+		person.AllGroupNames = append(person.AllGroupNames, group.Name)
+	}
 }
 
-func (c *Catalog) resolveInheritedGroupsRecursively(person *Person, group *Group, depth int) []string {
-	var inheritedGroupNames []string
+func (c *Catalog) resolveInheritedGroupsRecursively(person *Person, group *Group, depth int) []*Group {
+	var inheritedGroups []*Group
 	if depth > recursionLimit {
 		panic(fmt.Sprintf("cyclic group parent references detected for person %s", person.Name))
 	}
 	if group.Parent != nil {
-		inheritedGroupNames = append(inheritedGroupNames, group.Parent.Name)
-		inheritedGroupNames = append(inheritedGroupNames, c.resolveInheritedGroupsRecursively(person, group.Parent, depth+1)...)
+		inheritedGroups = append(inheritedGroups, group.Parent)
+		inheritedGroups = append(inheritedGroups, c.resolveInheritedGroupsRecursively(person, group.Parent, depth+1)...)
 	}
-	return inheritedGroupNames
+	return inheritedGroups
 }
 
 func (c *Catalog) GetGroup(name string) *Group {

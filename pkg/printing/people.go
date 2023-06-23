@@ -48,14 +48,14 @@ func (p *Printer) printPeopleTable(matchingPeople []*live.Person) {
 	for _, person := range people {
 		// Concatenate group names
 		groupNames := ""
-		for _, group := range person.Spec.Groups {
-			groupNames += group + " "
+		for _, group := range person.Groups {
+			groupNames += group.GetDisplayName(p.opts.ShowIdentifierNames, true) + " "
 		}
 
 		// Concatenate inherited group names
 		inheritedGroupNames := ""
-		for _, group := range person.InheritedGroupsNames {
-			inheritedGroupNames += group + " "
+		for _, group := range person.InheritedGroups {
+			inheritedGroupNames += group.GetDisplayName(p.opts.ShowIdentifierNames, true) + " "
 		}
 
 		// Build row

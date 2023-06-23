@@ -1,6 +1,8 @@
 package filtering
 
-import "strings"
+import (
+	"strings"
+)
 
 type PatternFilter struct {
 	pattern Pattern
