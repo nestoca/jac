@@ -15,47 +15,42 @@ type Config struct {
 	Glob string `yaml:"glob,omitempty"`
 }
 
-func LoadConfig(dir string) (*Config, error) {
+func LoadConfig(explicitDir string) (*Config, error) {
 	var cfg *Config
 
-	if dir != "" {
-		// Try explicitly specified directory
-		var err error
-		cfg, err = loadConfig(dir)
-		if err != nil {
-			return nil, fmt.Errorf("loading config: %w", err)
-		}
-		if cfg == nil {
-			return nil, fmt.Errorf("no %s config file found in %q", jacrcFile, dir)
-		}
-	} else {
-		// Try current directory
-		var err error
-		dir, err = os.Getwd()
-		if err != nil {
-			return nil, fmt.Errorf("getting current directory: %w", err)
-		}
-		cfg, err = loadConfig(dir)
-		if err != nil {
-			return nil, fmt.Errorf("loading config from current directory %q: %w", dir, err)
-		}
+	// Determine different candidate directories to look for config file
+	currentDir, err := os.Getwd()
+	if err != nil {
+		return nil, fmt.Errorf("getting current directory: %w", err)
+	}
+	userHomeDir, err := os.UserHomeDir()
+	if err != nil {
+		return nil, fmt.Errorf("getting home directory: %w", err)
+	}
+	jacHomeDir := filepath.Join(userHomeDir, jacHomeDir)
+	candidateDirs := []string{
+		explicitDir,
+		currentDir,
+		userHomeDir,
+		jacHomeDir,
 	}
 
+	// Look in all candidate directories for config file
+	for _, dir := range candidateDirs {
+		if dir == "" {
+			continue
+		}
+		cfg, err = loadConfig(dir)
+		if err != nil {
+			return nil, fmt.Errorf("loading config from %q: %w", dir, err)
+		}
+		if cfg != nil {
+			cfg.Dir = filepath.Join(dir, cfg.Dir)
+			break
+		}
+	}
 	if cfg == nil {
-		// Try jac home directory
-		userHomeDir, err := os.UserHomeDir()
-		if err != nil {
-			return nil, fmt.Errorf("getting home directory: %w", err)
-		}
-		jacHome := filepath.Join(userHomeDir, jacHomeDir)
-		cfg, err = loadConfig(jacHome)
-		if err != nil {
-			return nil, fmt.Errorf("loading config from jac home directory %q: %w", jacHome, err)
-		}
-		if cfg == nil {
-			return nil, fmt.Errorf("no %s config file could be found in any of expected locations", jacrcFile)
-		}
-		cfg.Dir = filepath.Join(jacHome, cfg.Dir)
+		return nil, fmt.Errorf("found %s config file in none of expected locations: %v", jacrcFile, candidateDirs)
 	}
 
 	// Set defaults
@@ -75,10 +70,11 @@ func loadConfig(dir string) (*Config, error) {
 		return nil, fmt.Errorf("checking for %s: %w", dir, err)
 	}
 
-	// Ensure directory contains a config file
+	// Check if directory contains a config file
 	jacrcPath := filepath.Join(dir, jacrcFile)
 	if _, err := os.Stat(jacrcPath); err != nil {
 		if os.IsNotExist(err) {
+			// We're done digging for config files
 			return nil, nil
 		}
 		return nil, fmt.Errorf("checking for %s: %w", jacrcPath, err)
@@ -98,6 +94,7 @@ func loadConfig(dir string) (*Config, error) {
 	}
 
 	if cfg.Dir == "" {
+		// We're done digging for config files
 		cfg.Dir = dir
 		return &cfg, nil
 	}
