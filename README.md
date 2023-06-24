@@ -31,8 +31,12 @@ You can override this with the `--dir` or `-d` flag.
 $ git clone git@github.com:<repo-owner>/<people-repo>.git ~/.jac
 ```
 
-Jac commands will look for people and groups YAML files in that repo using the `**/*.yaml` glob pattern.
-You can override this with the `--glob` or `-g` flag.
+## Cloning to a different directory
+
+Put a `.jacrc` file in your home directory and set the `dir` property to the path to your git repo:
+```yaml
+dir: /path/to/repo
+```
 
 # Usage
 
@@ -44,15 +48,14 @@ Usage:
 
 Available Commands:
   completion  Generate the autocompletion script for the specified shell
-  groups      Get groups
+  groups      List groups
   help        Help about any command
-  people      Get people
+  people      List people
   pull        Pull git repo
   version     Display jac version
 
 Flags:
   -d, --dir string    Directory to search for CRD files (defaults to ~/.jac/repo)
-      --glob string   Glob expression for matching CRD files (default "**/*.yaml")
   -h, --help          help for jac
   -y, --yaml          Output in YAML format
 

@@ -45,7 +45,6 @@ func LoadConfig(explicitDir string) (*Config, error) {
 			return nil, fmt.Errorf("loading config from %q: %w", dir, err)
 		}
 		if cfg != nil {
-			cfg.Dir = filepath.Join(dir, cfg.Dir)
 			break
 		}
 	}
@@ -100,12 +99,16 @@ func loadConfig(dir string) (*Config, error) {
 	}
 
 	// Load alternative config
-	altDir := filepath.Join(dir, cfg.Dir)
+	altDir := cfg.Dir
+	if !filepath.IsAbs(altDir) {
+		altDir = filepath.Join(dir, altDir)
+	}
 	altCfg, err := loadConfig(altDir)
 	if err != nil {
 		return nil, fmt.Errorf("loading config from alternative directory %q: %w", altDir, err)
 	}
 	if altCfg == nil {
+		cfg.Dir = altDir
 		return &cfg, nil
 	}
 
@@ -115,12 +118,6 @@ func loadConfig(dir string) (*Config, error) {
 	}
 	if altCfg.Dir != "" {
 		cfg.Dir = altCfg.Dir
-	}
-
-	// Resolve dir to absolute path
-	cfg.Dir, err = filepath.Abs(altDir)
-	if err != nil {
-		return nil, fmt.Errorf("resolving absolute path for config directory %q: %w", cfg.Dir, err)
 	}
 
 	return &cfg, nil
