@@ -33,7 +33,7 @@ func (p *Printer) printPeopleTable(matchingPeople []*live.Person) {
 	table.SetCenterSeparator("")
 
 	headers := []string{"NAME", "FIRST NAME", "LAST NAME", "EMAIL"}
-	if p.opts.ShowGroupColumns {
+	if !p.opts.HideGroupColumns {
 		headers = append(headers, "GROUPS")
 		headers = append(headers, "INHERITED GROUPS")
 	}
@@ -60,7 +60,7 @@ func (p *Printer) printPeopleTable(matchingPeople []*live.Person) {
 
 		// Build row
 		row := []string{person.Name, person.Spec.FirstName, person.Spec.LastName, person.Spec.Email}
-		if p.opts.ShowGroupColumns {
+		if !p.opts.HideGroupColumns {
 			row = append(row, groupNames)
 			row = append(row, inheritedGroupNames)
 		}

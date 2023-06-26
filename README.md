@@ -90,11 +90,11 @@ $ jac people --group <group1>,<group2>,...
 $ jac people -g <group1>,<group2>,...
 ```
 
-## List people, displaying group columns
+## List people, hiding group columns
 
-Use `--show-groups` or `-G` to filter by group:
+Use `--hide-groups` or `-G` to hide group columns (eg: if your terminal is too narrow):
 ```bash
-$ jac people --show-groups
+$ jac people --hide-groups
 $ jac people -G
 ```
 
