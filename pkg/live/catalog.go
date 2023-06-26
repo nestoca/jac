@@ -80,6 +80,10 @@ func (c *Catalog) Load(globExpr string) error {
 				Group: crdObj,
 			}
 			group.Yaml = strings.TrimSpace(string(data))
+			err = group.LoadValues()
+			if err != nil {
+				return err
+			}
 			c.All.Groups = append(c.All.Groups, group)
 		case "Person":
 			var crdObj v1alpha1.Person
@@ -91,6 +95,10 @@ func (c *Catalog) Load(globExpr string) error {
 				Person: crdObj,
 			}
 			person.Yaml = strings.TrimSpace(string(data))
+			err = person.LoadValues()
+			if err != nil {
+				return err
+			}
 			c.All.People = append(c.All.People, person)
 		default:
 			return fmt.Errorf("unsupported CRD kind: %s", gvk.Kind)

@@ -6,6 +6,11 @@ import (
 	"strings"
 )
 
+type ValuesProvider interface {
+	GetValue(keyPath string) (string, bool)
+	GetValueOrDefault(keyPath, defaultValue string) string
+}
+
 func loadValues(rawJson []byte) (map[string]interface{}, error) {
 	v := make(map[string]interface{})
 	if rawJson != nil {
