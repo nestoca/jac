@@ -309,7 +309,7 @@ When you run `jac` it looks for `.jacrc` file in the following locations:
 That file is in YAML format and can contain the following properties:
 
 ```yaml
-dir: path/to/directory
+dir: /full/path/to/directory
 glob: "**/*.yaml"
 ```
 
