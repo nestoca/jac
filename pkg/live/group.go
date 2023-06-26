@@ -34,6 +34,14 @@ func (g *Group) GetDisplayName(showNames, allowEmoji bool) string {
 	return g.Name
 }
 
+func (g *Group) GetValueOrDefault(keyPath, defaultValue string) string {
+	value, ok := g.GetValue(keyPath)
+	if ok {
+		return value
+	}
+	return defaultValue
+}
+
 func (g *Group) GetValue(keyPath string) (string, bool) {
 	if g.values == nil {
 		var err error

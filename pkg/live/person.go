@@ -29,6 +29,14 @@ func (p *Person) GetDisplayName(showNames bool) string {
 	return p.Name
 }
 
+func (p *Person) GetValueOrDefault(keyPath, defaultValue string) string {
+	value, ok := p.GetValue(keyPath)
+	if ok {
+		return value
+	}
+	return defaultValue
+}
+
 func (p *Person) GetValue(keyPath string) (string, bool) {
 	if p.values == nil {
 		var err error
