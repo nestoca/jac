@@ -94,7 +94,7 @@ func (p *Printer) printPeopleYaml(people []*live.Person) error {
 }
 
 func (p *Printer) printPeopleTree(matchingPeople []*live.Person) {
-	tree.PrintHr(p.newTreeForPeople("", p.catalog.Root.People, matchingPeople, 1))
+	tree.PrintHrn(p.newTreeForPeople("", p.catalog.Root.People, matchingPeople, 1))
 	p.printCount(len(matchingPeople))
 }
 

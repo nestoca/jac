@@ -79,7 +79,7 @@ func (p *Printer) printGroupsYaml(groups []*live.Group) error {
 }
 
 func (p *Printer) printGroupsTree(matchingGroups []*live.Group) {
-	tree.PrintHr(p.newTreeForGroups("", p.catalog.Root.Groups, matchingGroups))
+	tree.PrintHrn(p.newTreeForGroups("", p.catalog.Root.Groups, matchingGroups))
 	p.printCount(len(matchingGroups))
 }
 
