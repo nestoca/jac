@@ -119,11 +119,6 @@ func (c *Catalog) Load(globExpr string) error {
 		}
 	}
 
-	// Sort root groups
-	sort.Slice(c.Root.Groups, func(i, j int) bool {
-		return c.Root.Groups[i].Name < c.Root.Groups[j].Name
-	})
-
 	// Resolve groups, parent and children for all people
 	for _, person := range c.All.People {
 		// Parent
@@ -159,6 +154,29 @@ func (c *Catalog) Load(globExpr string) error {
 	for _, person := range c.All.People {
 		sort.Slice(person.Children, func(i, j int) bool {
 			return person.Children[i].Name < person.Children[j].Name
+		})
+	}
+
+	// Sort root groups
+	sort.Slice(c.Root.Groups, func(i, j int) bool {
+		return c.Root.Groups[i].Name < c.Root.Groups[j].Name
+	})
+
+	// Sort root people
+	sort.Slice(c.Root.People, func(i, j int) bool {
+		return c.Root.People[i].Name < c.Root.People[j].Name
+	})
+
+	// Sort all groups members
+	for _, group := range c.All.Groups {
+		sort.Slice(group.Members, func(i, j int) bool {
+			return group.Members[i].Name < group.Members[j].Name
+		})
+		sort.Slice(group.AllMembers, func(i, j int) bool {
+			return group.AllMembers[i].Name < group.AllMembers[j].Name
+		})
+		sort.Slice(group.IndirectMembers, func(i, j int) bool {
+			return group.IndirectMembers[i].Name < group.IndirectMembers[j].Name
 		})
 	}
 
