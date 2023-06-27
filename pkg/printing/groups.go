@@ -32,7 +32,8 @@ func (p *Printer) printGroupsTable(matchingGroups []*live.Group) {
 	table.SetRowSeparator("")
 	table.SetCenterSeparator("")
 
-	table.SetHeader([]string{"NAME", "FULL NAME", "EMAIL", "TYPE", "PARENT"})
+	headers := []string{"NAME", "FULL NAME", "EMAIL", "TYPE", "PARENT"}
+	table.SetHeader(headers)
 
 	// Show all?
 	groups := matchingGroups
@@ -61,6 +62,7 @@ func (p *Printer) printGroupsTable(matchingGroups []*live.Group) {
 	}
 
 	table.Render()
+	p.printCount(len(matchingGroups))
 }
 
 func (p *Printer) printGroupsYaml(groups []*live.Group) error {
@@ -78,6 +80,7 @@ func (p *Printer) printGroupsYaml(groups []*live.Group) error {
 
 func (p *Printer) printGroupsTree(matchingGroups []*live.Group) {
 	tree.PrintHr(p.newTreeForGroups("", p.catalog.Root.Groups, matchingGroups))
+	p.printCount(len(matchingGroups))
 }
 
 func (p *Printer) newTreeForGroup(group *live.Group, matchingGroups []*live.Group, isMatching bool) *Node {

@@ -77,6 +77,7 @@ func (p *Printer) printPeopleTable(matchingPeople []*live.Person) {
 	}
 
 	table.Render()
+	p.printCount(len(matchingPeople))
 }
 
 func (p *Printer) printPeopleYaml(people []*live.Person) error {
@@ -94,6 +95,7 @@ func (p *Printer) printPeopleYaml(people []*live.Person) error {
 
 func (p *Printer) printPeopleTree(matchingPeople []*live.Person) {
 	tree.PrintHr(p.newTreeForPeople("", p.catalog.Root.People, matchingPeople, 1))
+	p.printCount(len(matchingPeople))
 }
 
 func (p *Printer) newTreeForPerson(person *live.Person, matchingPeople []*live.Person, isHighlighted bool, depth int) *Node {
