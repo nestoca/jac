@@ -26,7 +26,7 @@ func newPeopleCmd() *cobra.Command {
 		Args:    cobra.ArbitraryArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Create opts
-			highlightMatches := showAll && (len(args) > 0 || findPattern != "" || groupPattern != "")
+			highlightMatches := (showAll || formatTree) && (len(args) > 0 || findPattern != "" || groupPattern != "")
 			opts := printing.NewPrintOpts(formatTree, formatYaml, showAll, hideGroupColumns, showNameIdentifiers, highlightMatches)
 
 			// Load config

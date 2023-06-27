@@ -43,5 +43,5 @@ func highlightAll(texts []string) (highlighted []string) {
 }
 
 func (p *Printer) printCount(count int) {
-	fmt.Printf("\n%s %s\n", color.InWhite("Count:"), color.InYellow(count))
+	fmt.Printf(" ———\n %s %s\n", color.InWhite("Count:"), color.InYellow(count))
 }
