@@ -1,0 +1,7 @@
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Group
+metadata:
+  name: stream-marketing
+spec:
+  fullName: Marketing
+  type: stream

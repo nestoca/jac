@@ -1,0 +1,13 @@
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Person
+metadata:
+  name: tinker-bell
+spec:
+  firstName: Tinker
+  lastName: Bell
+  email: tinker@example.com
+  groups:
+    - role-devops
+    - team-fairies
+  values:
+    githubUser: tinkerbelle

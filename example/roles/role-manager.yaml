@@ -1,0 +1,8 @@
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Group
+metadata:
+  name: role-manager
+spec:
+  emoji: 👨‍💼
+  fullName: Manager
+  type: role

@@ -1,0 +1,8 @@
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Group
+metadata:
+  name: role-devops
+spec:
+  emoji: 🛠️
+  fullName: DevOps
+  type: role

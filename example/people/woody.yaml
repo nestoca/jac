@@ -1,0 +1,13 @@
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Person
+metadata:
+  name: woody
+spec:
+  firstName: Woody
+  lastName: -
+  email: woody@example.com
+  groups:
+    - role-manager
+    - team-incredibles
+  values:
+    githubUser: woody

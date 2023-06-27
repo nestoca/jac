@@ -1,0 +1,15 @@
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Person
+metadata:
+  name: rapunzel
+spec:
+  firstName: Rapunzel
+  lastName: -
+  email: rapunzel@example.com
+  groups:
+    - role-support
+    - role-manager
+    - stream-development
+  parent: elsa
+  values:
+    githubUser: rapunzel

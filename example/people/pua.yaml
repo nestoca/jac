@@ -1,0 +1,13 @@
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Person
+metadata:
+  name: pua
+spec:
+  firstName: Pua
+  lastName: -
+  email: pua@example.com
+  groups:
+    - role-frontend
+    - team-moana
+  values:
+    githubUser: pua
