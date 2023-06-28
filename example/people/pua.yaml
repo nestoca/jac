@@ -4,7 +4,7 @@ metadata:
   name: pua
 spec:
   firstName: Pua
-  lastName: -
+  lastName: Petal
   email: pua@example.com
   groups:
     - role-frontend

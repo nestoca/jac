@@ -4,7 +4,7 @@ metadata:
   name: rapunzel
 spec:
   firstName: Rapunzel
-  lastName: -
+  lastName: Tangled
   email: rapunzel@example.com
   groups:
     - role-support

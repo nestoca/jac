@@ -4,10 +4,11 @@ metadata:
   name: woody
 spec:
   firstName: Woody
-  lastName: -
+  lastName: Timberlake
   email: woody@example.com
   groups:
     - role-manager
     - team-incredibles
+  parent: alice-wonderland
   values:
     githubUser: woody
