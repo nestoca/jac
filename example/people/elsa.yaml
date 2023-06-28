@@ -4,7 +4,7 @@ metadata:
   name: elsa
 spec:
   firstName: Elsa
-  lastName: Frost
+  lastName: null
   email: elsa@example.com
   groups:
     - role-backend

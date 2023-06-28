@@ -4,7 +4,7 @@ metadata:
   name: woody
 spec:
   firstName: Woody
-  lastName: Timberlake
+  lastName: null
   email: woody@example.com
   groups:
     - role-manager

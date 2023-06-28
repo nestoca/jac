@@ -4,7 +4,7 @@ metadata:
   name: maui
 spec:
   firstName: Maui
-  lastName: Oceanic
+  lastName: null
   email: maui@example.com
   groups:
     - role-backend

@@ -4,7 +4,7 @@ metadata:
   name: moana
 spec:
   firstName: Moana
-  lastName: Waialiki
+  lastName: null
   email: moana@example.com
   groups:
     - role-support
