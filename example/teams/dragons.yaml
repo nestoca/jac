@@ -1,0 +1,9 @@
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Group
+metadata:
+  name: team-dragons
+spec:
+  emoji: 🐉
+  fullName: Dragons Team
+  type: team
+  parent: stream-tech-support

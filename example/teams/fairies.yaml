@@ -1,0 +1,9 @@
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Group
+metadata:
+  name: team-fairies
+spec:
+  emoji: 🧚‍♀️
+  fullName: Fairies Team
+  type: team
+  parent: stream-development

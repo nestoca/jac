@@ -1,0 +1,14 @@
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Person
+metadata:
+  name: buzz-lightyear
+spec:
+  firstName: Buzz
+  lastName: Lightyear
+  email: buzz@example.com
+  groups:
+    - role-frontend
+    - team-incredibles
+  parent: alice-wonderland
+  values:
+    githubUser: buzzlightyear

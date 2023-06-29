@@ -1,0 +1,13 @@
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Person
+metadata:
+  name: jack-sparrow
+spec:
+  firstName: Jack
+  lastName: Sparrow
+  email: jack@example.com
+  groups:
+    - role-devops
+    - team-dragons
+  values:
+    githubUser: jacksparrow
