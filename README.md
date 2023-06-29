@@ -62,6 +62,7 @@ Flags:
 Use "jac [command] --help" for more information about a command.
 ```
 
+Detailed examples for the commands that follow have been documented in a [separate README in the `example` folder](example/README.md).
 ## List all people
 
 ```bash
@@ -155,7 +156,7 @@ $ jac groups <group1>,<group2>,...
 Use `--type` to filter by group type:
 ```bash
 $ jac groups --type <type1>,<type2>,...
-$ jac groups -t <type1>,<type2>,...
+$ jac groups -T <type1>,<type2>,...
 ```
 
 ## Pull latest version of git repo
@@ -171,9 +172,9 @@ You can use the following syntax to specify the pattern for `groups` and `people
 - Use `*` to match any number of characters
 - Specify multiple `,`-separated patterns to match **any** of them
 - Specify multiple `&`-separated patterns to match **all** of them
-- Group patterns together with `(` `patterns...` `)`
+- Force operator evaluation order using parentheses (eg: `(pattern1&pattern2),pattern3`)
 - Prefix a pattern with `!` to negate it
-- When including `*` or spaces in patterns, enclose the whole thing in quotes to avoid shell issues
+- When including `*`, `&`, `()`, `!` or spaces in patterns, enclose the whole thing in single-quotes to avoid shell issues
 
 # People
 
