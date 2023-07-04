@@ -13,27 +13,26 @@ $ jac people
   dash-parr         Dash        Parr        dash@example.com      DevOps Incredibles Team         Development
   elsa              Elsa                    elsa@example.com      Backend Developer Fairies Team  Development
 
-helen-parr Helen Parr helen@example.com Manager Incredibles Team Development
-jack-sparrow Jack Sparrow jack@example.com DevOps Dragons Team Tech Support
-maui Maui maui@example.com Backend Developer Moana's Team Marketing
+  helen-parr        Helen       Parr        helen@example.com     Manager Incredibles Team        Development
+  jack-sparrow      Jack        Sparrow     jack@example.com      DevOps Dragons Team             Tech Support
+  maui              Maui                    maui@example.com      Backend Developer Moana's Team  Marketing
 
-mickey-mouse Mickey Mouse mickey@example.com Frontend Developer Tech Support
-Unicorns Team
-moana Moana moana@example.com Support Specialist Marketing
-Moana's Team
-peter-pan Peter Pan peter@example.com Backend Developer Dragons Team Tech Support
+  mickey-mouse      Mickey      Mouse       mickey@example.com    Frontend Developer              Tech Support
+                                                                  Unicorns Team
+  moana             Moana                   moana@example.com     Support Specialist              Marketing
+                                                                  Moana's Team
+  peter-pan         Peter       Pan         peter@example.com     Backend Developer Dragons Team  Tech Support
 
-pua Pua pua@example.com Frontend Developer Marketing
-Moana's Team
-rapunzel Rapunzel rapunzel@example.com Manager Support Specialist
-Development
-tinker-bell Tinker Bell tinker@example.com DevOps Fairies Team Development
-violet-parr Violet Parr violet@example.com Frontend Developer Development
-Incredibles Team
-woody Woody woody@example.com Manager Incredibles Team Development
-———
-Count: 15
-
+  pua               Pua                     pua@example.com       Frontend Developer              Marketing
+                                                                  Moana's Team
+  rapunzel          Rapunzel                rapunzel@example.com  Manager Support Specialist
+                                                                  Development
+  tinker-bell       Tinker      Bell        tinker@example.com    DevOps Fairies Team             Development
+  violet-parr       Violet      Parr        violet@example.com    Frontend Developer              Development
+                                                                  Incredibles Team
+  woody             Woody                   woody@example.com     Manager Incredibles Team        Development
+ ———
+ Count: 15
 ```
 
 </details>
