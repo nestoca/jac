@@ -1,5 +1,8 @@
 ## List all people
 
+<details>
+<summary>$ jac people</summary>
+
 ```bash
 $ jac people
   NAME              FIRST NAME  LAST NAME   EMAIL                 GROUPS                          INHERITED GROUPS
@@ -10,29 +13,35 @@ $ jac people
   dash-parr         Dash        Parr        dash@example.com      DevOps Incredibles Team         Development
   elsa              Elsa                    elsa@example.com      Backend Developer Fairies Team  Development
 
-  helen-parr        Helen       Parr        helen@example.com     Manager Incredibles Team        Development
-  jack-sparrow      Jack        Sparrow     jack@example.com      DevOps Dragons Team             Tech Support
-  maui              Maui                    maui@example.com      Backend Developer Moana's Team  Marketing
+helen-parr Helen Parr helen@example.com Manager Incredibles Team Development
+jack-sparrow Jack Sparrow jack@example.com DevOps Dragons Team Tech Support
+maui Maui maui@example.com Backend Developer Moana's Team Marketing
 
-  mickey-mouse      Mickey      Mouse       mickey@example.com    Frontend Developer              Tech Support
-                                                                  Unicorns Team
-  moana             Moana                   moana@example.com     Support Specialist              Marketing
-                                                                  Moana's Team
-  peter-pan         Peter       Pan         peter@example.com     Backend Developer Dragons Team  Tech Support
+mickey-mouse Mickey Mouse mickey@example.com Frontend Developer Tech Support
+Unicorns Team
+moana Moana moana@example.com Support Specialist Marketing
+Moana's Team
+peter-pan Peter Pan peter@example.com Backend Developer Dragons Team Tech Support
 
-  pua               Pua                     pua@example.com       Frontend Developer              Marketing
-                                                                  Moana's Team
-  rapunzel          Rapunzel                rapunzel@example.com  Manager Support Specialist
-                                                                  Development
-  tinker-bell       Tinker      Bell        tinker@example.com    DevOps Fairies Team             Development
-  violet-parr       Violet      Parr        violet@example.com    Frontend Developer              Development
-                                                                  Incredibles Team
-  woody             Woody                   woody@example.com     Manager Incredibles Team        Development
- ———
- Count: 15
+pua Pua pua@example.com Frontend Developer Marketing
+Moana's Team
+rapunzel Rapunzel rapunzel@example.com Manager Support Specialist
+Development
+tinker-bell Tinker Bell tinker@example.com DevOps Fairies Team Development
+violet-parr Violet Parr violet@example.com Frontend Developer Development
+Incredibles Team
+woody Woody woody@example.com Manager Incredibles Team Development
+———
+Count: 15
+
 ```
 
+</details>
+
 ## List specific people
+
+<details>
+<summary> $ jac people elsa,rapunzel</summary>
 
 ```bash
 $ jac people elsa,rapunzel
@@ -45,9 +54,15 @@ $ jac people elsa,rapunzel
  Count: 2
 ```
 
+</details>
+
 ## Find people with free-text search
 
-Use `--find` or `-f` to find people with free-text search in their first or last name, email or name identifier: 
+<details>
+<summary>$ jac people -f alice</summary>
+
+Use `--find` or `-f` to find people with free-text search in their first or last name, email or name identifier:
+
 ```bash
 $ jac people -f alice
   NAME              FIRST NAME  LAST NAME   EMAIL              GROUPS                          INHERITED GROUPS
@@ -57,9 +72,15 @@ $ jac people -f alice
  Count: 1
 ```
 
+</details>
+
 ## List people belonging to any of given groups
 
+<details>
+<summary>$ jac people -g team-incredibles,role-frontend</summary>
+
 Use `--group` or `-g` to filter by group:
+
 ```bash
 $ jac people -g team-incredibles,role-frontend
   NAME            FIRST NAME  LAST NAME  EMAIL               GROUPS                          INHERITED GROUPS
@@ -78,9 +99,15 @@ $ jac people -g team-incredibles,role-frontend
  Count: 7
 ```
 
+</details>
+
 ## List people, hiding group columns
 
+<details>
+<summary> $ jac people -G</summary>
+
 Use `--hide-groups` or `-G` to hide group columns (eg: if your terminal is too narrow):
+
 ```bash
 $ jac people -G
   NAME              FIRST NAME  LAST NAME   EMAIL
@@ -103,9 +130,14 @@ $ jac people -G
  Count: 15
 ```
 
+</details>
+
 ## List people, displaying names
 
+<details>
+<summary>$ jac people -N</summary>
 Use `--show-names` or `-N` to display identifier names instead of full names:
+
 ```bash
 $ jac people -N
   NAME              FIRST NAME  LAST NAME   EMAIL                 GROUPS                          INHERITED GROUPS
@@ -132,12 +164,17 @@ $ jac people -N
  Count: 15
 ```
 
+</details>
+
 ## Output results as YAML
 
+<details>
+<summary>$ jac people -y</summary>
 Use `--yaml` or `-y` to output results as YAML instead of the default table format:
+
 ```bash
 $ jac people -y
-apiVersion: jac.nesto.ca/v1alpha1                                                                                                                                                                                                                                                                                                                                [136/998]
+apiVersion: jac.nesto.ca/v1alpha1
 kind: Person
 metadata:
   name: alice-wonderland
@@ -354,9 +391,14 @@ spec:
     githubUser: woody
 ```
 
+</details>
+
 ## Output results as tree
 
+<details>
+<summary>$ jac people -t</summary>
 Use `--tree` or `-t` to output results as YAML instead of the default table format:
+
 ```bash
 $ jac people -t
 
@@ -379,11 +421,16 @@ $ jac people -t
  Count: 15
 ```
 
+</details>
+
 ## Highlight specific people in tree
 
+<details>
+<summary>$ jac people --show-all --tree --find alice</summary>
 Use `--show-all` or `-A` to show all people in tree, highlighting specific people with free-text search:
+
 ```bash
-# $ jac people --show-all --tree --find <search>
+# $ jac people --show-all --tree --find alice
 $ jac people -Atf alice
 
 ├─ Dash Parr
@@ -404,9 +451,15 @@ $ jac people -Atf alice
  ———
  Count: 1
 ```
+
 Without `--show-all`, only people matching the search will be shown, along with their parents.
 
+</details>
+
 ## Highlight people of a specific team in tree
+
+<details>
+<summary>$ jac people --show-all --tree --group "team-unicorns"</summary>
 
 ```bash
 # $ jac people --show-all --tree --group "team-unicorns"
@@ -414,12 +467,12 @@ $ jac people -Atg "team-unicorns"
 
 ├─ Dash Parr
 ├─ Elsa
-│  └─ Rapunzel
+│ └─ Rapunzel
 ├─ Helen Parr
 ├─ Jack Sparrow
-│  └─ Alice Wonderland
-│     ├─ Buzz Lightyear
-│     └─ Woody
+│ └─ Alice Wonderland
+│ ├─ Buzz Lightyear
+│ └─ Woody
 ├─ Maui
 ├─ Mickey Mouse
 ├─ Moana
@@ -427,11 +480,17 @@ $ jac people -Atg "team-unicorns"
 ├─ Pua
 ├─ Tinker Bell
 └─ Violet Parr
- ———
- Count: 1
+———
+Count: 1
+
 ```
 
+</details>
+
 ## List all groups
+
+<details>
+<summary>$ jac groups</summary>
 
 ```bash
 $ jac groups
@@ -453,7 +512,12 @@ $ jac groups
  Count: 13
 ```
 
+</details>
+
 ## List specific groups
+
+<details>
+<summary>$ jac groups role-frontend,team-unicorns</summary>
 
 ```bash
 $ jac groups role-frontend,team-unicorns
@@ -464,9 +528,15 @@ $ jac groups role-frontend,team-unicorns
  Count: 2
 ```
 
+</details>
+
 ## List groups of specific types
 
+<details>
+<summary>$ jac groups --type stream,role</summary>
+
 Use `--type` to filter by group type:
+
 ```bash
 # $ jac groups --type stream,role
 $ jac groups -T stream,role
@@ -483,18 +553,31 @@ $ jac groups -T stream,role
  Count: 8
 ```
 
+</details>
+
 ## Pull latest version of git repo
+
+<details>
+<summary>$ jac pull</summary>
 
 ```bash
 $ jac pull
 Already up to date.
 ```
 
-## Pattern syntax
+</details>
+
+---
+
+# Pattern syntax
 
 You can use the following syntax to specify the pattern for `groups` and `people` commands:
 
-### Use `*` to match any number of characters
+## Use `*` to match any number of characters
+
+<details>
+<summary>$ jac people "*oa*"</summary>
+
 ```bash
 $ jac people "*oa*"
   NAME   FIRST NAME  LAST NAME  EMAIL              GROUPS                          INHERITED GROUPS
@@ -503,7 +586,14 @@ $ jac people "*oa*"
  ———
  Count: 1
 ```
-### Specify multiple `,`-separated patterns to match **any** of them
+
+</details>
+
+## Specify multiple `,`-separated patterns to match **any** of them
+
+<details>
+<summary>$ jac people -g role-frontend,team-unicorns</summary>
+
 ```bash
 $ jac people -g role-frontend,team-unicorns
   NAME            FIRST NAME  LAST NAME  EMAIL               GROUPS                          INHERITED GROUPS
@@ -518,7 +608,14 @@ $ jac people -g role-frontend,team-unicorns
  ———
  Count: 4
 ```
-### Specify multiple `&`-separated patterns to match **all** of them
+
+</details>
+
+## Specify multiple `&`-separated patterns to match **all** of them
+
+<details>
+<summary>$ jac people -g "role-frontend&team-unicorns"</summary>
+
 ```bash
 $ jac people -g "role-frontend&team-unicorns"
   NAME          FIRST NAME  LAST NAME  EMAIL               GROUPS                          INHERITED GROUPS
@@ -527,7 +624,14 @@ $ jac people -g "role-frontend&team-unicorns"
  ———
  Count: 1
 ```
-### Prefix a pattern with `!` to negate it
+
+</details>
+
+## Prefix a pattern with `!` to negate it
+
+<details>
+<summary>$ jac people -g '!role-frontend'</summary>
+
 ```bash
 $ jac people -g '!role-frontend'
   NAME              FIRST NAME  LAST NAME   EMAIL                 GROUPS                          INHERITED GROUPS
@@ -550,3 +654,6 @@ $ jac people -g '!role-frontend'
   woody             Woody                   woody@example.com     Manager Incredibles Team        Development
  ———
  Count: 11
+```
+
+</details>
