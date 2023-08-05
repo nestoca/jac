@@ -1,0 +1,34 @@
+name: render
+description: |-
+  This is an example GitHub Action that demonstrates how to generate an html page from a jac catalog,
+  showing a table of the different streams, teams and their members.  Also see the
+  `.github/workflows/publish-example.yaml` workflow in this same repository, which uses this action.
+
+inputs:
+
+  catalog:
+    description: Path to jac catalog
+    required: true
+
+  template:
+    description: Path to go template file
+    required: true
+
+  output-file:
+    description: Path to output html file
+    required: true
+ 
+runs:
+  using: composite
+  steps:
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: "1.20"
+
+    - name: Render teams page
+      shell: bash
+      run: |-
+        cd ${{ github.action_path }}/render-go
+        go run . ${{ inputs.catalog }} ${{ inputs.template }} ${{ inputs.output-file }}

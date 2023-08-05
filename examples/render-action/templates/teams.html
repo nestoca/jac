@@ -1,0 +1,72 @@
+<html>
+<head>
+    <style>
+		table {
+			border-style: solid;
+			border-color: black;
+		}
+		td {
+			border-style: solid;
+			border-color: black;
+			padding: 4px;
+		}
+    </style>
+</head>
+<body>
+<h1>Context</h1>
+<p>This page was generated from the <a href="https://github.com/nestoca/jac/examples/catalog">example</a> jac catalog,
+by the <a href="https://github.com/nestoca/people/blob/master/.github/workflows/publish.yaml">publish</a> GitHub workflow,
+using the <a href="https://github.com/nestoca/jac/examples/publish">publish</a> GitHub action.</p>
+<p>For more information, refer to the <a href="https://github.com/nestoca/jac">jac</a> git project.</p>
+<h1>Streams, teams and members</h1>
+<table>
+	<tr>
+		<th><b>Streams</b></th>
+		<th><b>Description</b></th>
+		<th><b>Stream Members</b></th>
+		<th><b>Teams</b></th>
+		<th><b>Teams Members</b></th>
+	</tr>
+	{{- range $streamIndex, $stream := .Streams }}
+	<tr>
+		<td rowspan="{{ len $stream.Teams }}"><b>{{ $stream.Name }}</b></td>
+		<td rowspan="{{ len $stream.Teams }}">
+			{{- $stream.Description | safeHTML }}
+			{{- $resourceLabel := getValue $stream "resourceLabel" }}
+			{{- if $resourceLabel }}<ul><li>Resource label: <em>{{ $resourceLabel }}</em></li></ul>{{ end -}}
+		</td>
+		<td rowspan="{{ len $stream.Teams }}">
+			{{- if $stream.Members }}
+			<ul>
+				{{- range $stream.Members }}
+				<li><a href="mailto:{{ .Email }}">{{ .Name }}</a>{{ " " }}
+					{{- range .Roles -}}
+					{{- .Name -}}{{ " " }}
+					{{- end -}}
+				</li>
+				{{- end }}
+			</ul>
+			{{- end }}
+		</td>
+	{{- range $teamIndex, $team := $stream.Teams }}
+	{{- if gt $teamIndex 0 }}
+	</tr><tr>
+	{{- end }}
+		<td><b>{{ $team.Name }}</b></td>
+		<td>
+			<ul>
+				{{- range $team.Members }}
+				<li><a href="mailto:{{ .Email }}">{{ .Name }}</a>{{ " " }}
+					{{- range .Roles -}}
+					{{- .Name -}}{{ " " }}
+					{{- end -}}
+				</li>
+				{{- end }}
+			</ul>
+		</td>
+	{{- end }}
+	</tr>
+	{{- end }}
+</table>
+</body>
+</html>

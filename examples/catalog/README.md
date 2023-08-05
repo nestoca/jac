@@ -1,3 +1,37 @@
+# Example
+
+This example shows how to use `jac` to list people and groups in a fictional organization.
+
+## Groups in this example
+
+With jac, groups are the primary way to organize people. They can be used to model different concepts such as
+departments, streams, teams, roles, etc. It's really up to you how you want to use them depending on your
+organization's needs. Groups do not have to be mutually exclusive, for example a person can belong to multiple
+teams, streams, and roles.
+
+It defines groups of different types: `role`, `team` and `stream`, but feel free to model your own
+organization's structure via group types that have meaning to you. You can use groups to represent any
+set of people, such as a department, a project, a team, etc.
+
+Here `stream` groups are used to represent different "value streams" (or products) and are a superset of `team` groups,
+which are used to represent different teams working on those value streams. `role` groups are used to represent different
+roles that people can have, such as `backend`, `frontend`, `devops`, etc.
+
+## Group parenting
+
+The `team` groups are parented to specific `stream` groups, which means that all people belonging to a `team` group
+automatically also belong to the `stream` group it is parented to. For example, all people belonging to `team-incredibles`
+automatically belong to `stream-development`.
+
+## Group name prefixing
+
+Group names have been prefixed with the type of group they are, for example `team-` for team groups, `role-` for role
+groups, etc. This is not required, but it can be useful to make it easier to identify the type of group when looking at
+the list of groups. It also prevents name collisions between groups of different types (eg: there's a `role-devops`, a
+`team-devops` and a `stream-devops`).
+
+# Example people commands
+
 ## List all people
 
 <details>
@@ -485,6 +519,8 @@ Count: 1
 ```
 
 </details>
+
+# Example group commands
 
 ## List all groups
 

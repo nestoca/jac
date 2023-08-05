@@ -1,7 +1,12 @@
 # Jac
 
-A tool for managing people and groups as Infrastructure as Code.  All people and groups are represented as YAML CRD
-resources and can be queried using the `jac` CLI.
+Jac is a CLI tool for managing people and groups as Infrastructure as Code.  All people and groups are represented as YAML
+resources and can be queried in various ways using the `jac` CLI.
+
+The git repo containing the YAML files is call the "catalog" and represents your source of truth for everything related to
+people and groups. See [examples/catalog](examples/catalog).
+
+This approach is GitOps-oriented and allows to easily automate other processes based on the catalog, such as automatically provisioning access to various systems according to group membership or generating an org chart.  See the [.github/workflows/publish-example.yaml](.github/workflows/publish-example.yaml) GitHub Actions workflow that automatically generates a teams page on GitHub Pages from the catalog, showing a table of all streams, teams and their members in an easily consultable format for the whole organization.
 
 # Installation
 
@@ -37,6 +42,79 @@ Put a `.jacrc` file in your home directory and set the `dir` property to the pat
 ```yaml
 dir: /path/to/repo
 ```
+
+# Example
+
+To get started, clone this repo and try the [examples commands](example) from within the `example` directory.
+
+# People
+
+People are the main building blocks of Jac and can be used to model employees, contractors, consultants, etc. They
+can then be organized into groups to represent your specific organizational structure.
+
+## YAML format
+
+```yaml
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Person
+metadata:
+  name: john-doe           # ID used to reference this person and query it
+spec:
+  firstName: John
+  lastName: Doe
+  email: john.doe@acme.com # Optional email address, for display purposes only
+  groups:
+    - team-sre
+    - role-devops
+    - role-sre
+    - role-team-lead
+  values:
+    # Arbitrary custom key-value pairs
+```
+
+# Groups
+
+Groups can be used to model different concepts such as departments, streams, teams, roles, etc.  It's really up to you how you want
+to use them depending on your organization's needs. Groups do not have to be mutually exclusive, for example a person
+can belong to multiple teams, streams, and roles.
+
+## YAML format
+
+```yaml
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Group
+metadata:
+  name: team-devops         # ID used to reference this group and query it and the people in it
+spec:
+  fullName: DevOps          # Display name
+  email: devops@acme.com    # Optional email address
+  type: team                # Optional type (eg: stream, team, role, etc) used to filter groups
+  parents:
+    - stream-devops
+  values:
+    # Arbitrary custom key-value pairs
+```
+
+## Group parenting and inheritance
+
+You can specify parent groups for a group via its `parents` property.
+
+All people belonging to a group automatically inherit all of its parent groups. By default, `jac people -g <group>`
+command will list all people belonging to the specified group or any of its child groups, unless the `--immediate` or
+`-i` flag is specified, in which case only people belonging directly to the specified group will be returned.
+
+That inheritance allows to reduce repetition in your YAML files and keep them DRY. For example, if you have a group
+`team-sre` with parent `stream-devops`, you don't need to explicitly specify `stream-devops` as group for all people in
+`team-sre`, because they will automatically inherit it.
+
+## Group types
+
+You can optionally specify a `type` property for a group, which can then be used to filter groups by type using the
+`--type` or `-T` flag.
+
+However, it is recommended to prefix group names with their type (eg: `stream-foo`, `team-bar`, `role-baz`) and rather
+rely on wildcards for filtering them (eg: `stream-*`, `team-*`, `role-*`). The `type` property is rather intended for
+programmatic processing of YAML files.
 
 # Usage
 
@@ -176,75 +254,6 @@ You can use the following syntax to specify the pattern for `groups` and `people
 - Prefix a pattern with `!` to negate it
 - When including `*`, `&`, `()`, `!` or spaces in patterns, enclose the whole thing in single-quotes to avoid shell issues
 
-# People
-
-People are the main building blocks of Jac and can be used to model employees, contractors, consultants, etc. They
-can then be organized into groups to represent your specific organizational structure.
-
-## YAML format
-
-```yaml
-apiVersion: jac.nesto.ca/v1alpha1
-kind: Person
-metadata:
-  name: john-doe           # ID used to reference this person and query it
-spec:
-  firstName: John
-  lastName: Doe
-  email: john.doe@acme.com # Optional email address, for display purposes only
-  groups:
-    - team-sre
-    - role-devops
-    - role-sre
-    - role-team-lead
-  values:
-    # Arbitrary custom key-value pairs
-```
-
-# Groups
-
-Groups can be used to model different concepts such as departments, streams, teams, roles, etc.  It's really up to you how you want
-to use them depending on your organization's needs. Groups do not have to be mutually exclusive, for example a person
-can belong to multiple teams, streams, and roles.
-
-## YAML format
-
-```yaml
-apiVersion: jac.nesto.ca/v1alpha1
-kind: Group
-metadata:
-  name: team-devops         # ID used to reference this group and query it and the people in it
-spec:
-  fullName: DevOps          # Display name
-  email: devops@acme.com    # Optional email address
-  type: team                # Optional type (eg: stream, team, role, etc) used to filter groups
-  parents:
-    - stream-devops
-  values:
-    # Arbitrary custom key-value pairs
-```
-
-## Group parenting and inheritance
-
-You can specify parent groups for a group via its `parents` property.
-
-All people belonging to a group automatically inherit all of its parent groups. By default, `jac people -g <group>`
-command will list all people belonging to the specified group or any of its child groups, unless the `--immediate` or
-`-i` flag is specified, in which case only people belonging directly to the specified group will be returned.
-
-That inheritance allows to reduce repetition in your YAML files and keep them DRY. For example, if you have a group
-`team-sre` with parent `stream-devops`, you don't need to explicitly specify `stream-devops` as group for all people in
-`team-sre`, because they will automatically inherit it.
-
-## Group types
-
-You can optionally specify a `type` property for a group, which can then be used to filter groups by type using the
-`--type` or `-T` flag.
-
-However, it is recommended to prefix group names with their type (eg: `stream-foo`, `team-bar`, `role-baz`) and rather
-rely on wildcards for filtering them (eg: `stream-*`, `team-*`, `role-*`). The `type` property is rather intended for
-programmatic processing of YAML files.
-
 # Other practical considerations
 
 ## Leveraging custom values
@@ -259,7 +268,7 @@ If you define groups with different `type`'s, it is recommended to prefix their 
 
 - It makes it easier to filter groups by type using wildcards (eg: `stream-*`, `team-*`, `role-*`)
 - It prevents name collisions between groups of different types
-(eg: `team-devops` and `role-devops`).
+(eg: `stream-devops`, `team-devops` and `role-devops`).
 
 ## Organizing groups and people in directories
 
@@ -321,3 +330,10 @@ config file's directory instead. If Jac finds another config file in that direct
 follow the same process over and over until no further config files and directories are found.
 
 The `glob` is optional, defaults to `**/*.yaml`
+
+# Why the name Jac?
+
+- It's a short 3-letter command that's easy to type and remember.
+- It sounds like the name of a person, which gives it some personality.
+- It falls in line nicely with other tools by same authors, such as [joy](https://github.com/nestoca/joy), [jen](https://github.com/silphid/jen), and [yey](https://github.com/silphid/yey).
+- Could mean something like "Johns and Janes As Code".
