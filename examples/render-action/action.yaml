@@ -30,5 +30,4 @@ runs:
     - name: Render teams page
       shell: bash
       run: |-
-        cd ${{ github.action_path }}/render-go
-        go run . ${{ inputs.catalog }} ${{ inputs.template }} ${{ inputs.output-file }}
+        go run ${{ github.action_path }}/render-go ${{ inputs.catalog }} ${{ inputs.template }} ${{ inputs.output-file }}
