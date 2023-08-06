@@ -268,8 +268,7 @@ You can use the following syntax to specify the pattern for `groups` and `people
 
 ## Leveraging custom values
 
-You can use the `values` property of people and groups to store arbitrary key-value pairs. Those values can then be
-used programmatically via Infra-as-Code and other automated workflows.
+You can use the `values` property of people and groups to store arbitrary key-value pairs. Those values can then be used programmatically in automated workflows. In the example [catalog](examples/catalog), streams have `resourceLabel` and `description` values (used while generating the html page) and people have a `githubUser` value.
 
 ## Prefixing group names with type
 
