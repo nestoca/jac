@@ -31,7 +31,7 @@ jobs:
           mkdir publish
 
       - name: Render teams html page
-        uses: nestoca/jac/examples/render-action@master
+        uses: nestoca/jac/examples/render-action@examples
         with:
           catalog: examples/catalog
           template: examples/templates/teams.html
