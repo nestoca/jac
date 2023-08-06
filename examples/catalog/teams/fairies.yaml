@@ -4,6 +4,6 @@ metadata:
   name: team-fairies
 spec:
   emoji: 🧚‍♀️
-  fullName: Fairies Team
+  fullName: Fairies
   type: team
   parent: stream-development

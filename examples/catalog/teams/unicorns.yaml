@@ -4,6 +4,6 @@ metadata:
   name: team-unicorns
 spec:
   emoji: 🦄
-  fullName: Unicorns Team
+  fullName: Unicorns
   type: team
   parent: stream-tech-support

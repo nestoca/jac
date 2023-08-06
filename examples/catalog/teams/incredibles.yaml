@@ -4,6 +4,6 @@ metadata:
   name: team-incredibles
 spec:
   emoji: 🦸‍♂️
-  fullName: Incredibles Team
+  fullName: Incredibles
   type: team
   parent: stream-development

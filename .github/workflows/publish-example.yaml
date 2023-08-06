@@ -1,21 +1,21 @@
 # This is an example GitHub Actions workflow that demonstrates how to:
 # 1. Generate an html page from a jac catalog, showing a table of the different streams, teams and their members.
-# 2. Publish it to GitHub Pages. 
-name: Publish example teams page to GitHub Pages
+# 2. Publish it to GitHub Pages.
+name: Publish example teams github page
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'examples/catalog/**'
-      - 'examples/render-action/templates/**'
+      - "examples/catalog/**"
+      - "examples/render-action/templates/**"
   pull_request:
     branches:
       - master
     paths:
-      - 'examples/catalog/**'
-      - 'examples/render-action/templates/**'
+      - "examples/catalog/**"
+      - "examples/render-action/templates/**"
 
 jobs:
   publish-people:
