@@ -1,12 +1,9 @@
 # Jac
 
-Jac is a CLI tool for managing people and groups as Infrastructure as Code.  All people and groups are represented as YAML
-resources and can be queried in various ways using the `jac` CLI.
+Jac is a CLI tool and YAML file format for managing people and groups as Infrastructure as Code.
 
-The git repo containing the YAML files is call the "catalog" and represents your source of truth for everything related to
-people and groups. See [examples/catalog](examples/catalog).
-
-This approach is GitOps-oriented and allows to easily automate other processes based on the catalog, such as automatically provisioning access to various systems according to group membership or generating an org chart.  See the [.github/workflows/publish-example.yaml](.github/workflows/publish-example.yaml) GitHub Actions workflow that automatically generates a teams page on GitHub Pages from the catalog, showing a table of all streams, teams and their members in an easily consultable format for the whole organization.
+- GitOps-oriented: A git repo — called the jac `catalog` — defines the source of truth for all people and groups, from which different processes can be automated, such as provisioning access permissions and generating org charts or team pages.
+- The `jac` CLI allows to query the catalog in various ways.
 
 # Installation
 
@@ -18,12 +15,14 @@ $ brew install jac
 ```
 
 Upgrade with:
+
 ```bash
 $ brew update
 $ brew upgrade jac
 ```
 
 ## Installing manually
+
 Download from GitHub [releases](https://github.com/nestoca/jac/releases/latest) and put the binary somewhere in your
 `$PATH`.
 
@@ -39,13 +38,14 @@ $ git clone git@github.com:<repo-owner>/<people-repo>.git ~/.jac
 ## Cloning to a different directory
 
 Put a `.jacrc` file in your home directory and set the `dir` property to the path to your git repo:
+
 ```yaml
 dir: /path/to/repo
 ```
 
-# Example
+# Examples
 
-To get started, clone this repo and try the [examples commands](example) from within the `example` directory.
+To get started, clone this repo and have a look at the example catalog, queries and GitHub action in the [examples](examples) directory.
 
 # People
 
@@ -58,7 +58,7 @@ can then be organized into groups to represent your specific organizational stru
 apiVersion: jac.nesto.ca/v1alpha1
 kind: Person
 metadata:
-  name: john-doe           # ID used to reference this person and query it
+  name: john-doe # ID used to reference this person and query it
 spec:
   firstName: John
   lastName: Doe
@@ -74,7 +74,7 @@ spec:
 
 # Groups
 
-Groups can be used to model different concepts such as departments, streams, teams, roles, etc.  It's really up to you how you want
+Groups can be used to model different concepts such as departments, streams, teams, roles, etc. It's really up to you how you want
 to use them depending on your organization's needs. Groups do not have to be mutually exclusive, for example a person
 can belong to multiple teams, streams, and roles.
 
@@ -84,11 +84,11 @@ can belong to multiple teams, streams, and roles.
 apiVersion: jac.nesto.ca/v1alpha1
 kind: Group
 metadata:
-  name: team-devops         # ID used to reference this group and query it and the people in it
+  name: team-devops # ID used to reference this group and query it and the people in it
 spec:
-  fullName: DevOps          # Display name
-  email: devops@acme.com    # Optional email address
-  type: team                # Optional type (eg: stream, team, role, etc) used to filter groups
+  fullName: DevOps # Display name
+  email: devops@acme.com # Optional email address
+  type: team # Optional type (eg: stream, team, role, etc) used to filter groups
   parents:
     - stream-devops
   values:
@@ -141,6 +141,7 @@ Use "jac [command] --help" for more information about a command.
 ```
 
 Detailed examples for the commands that follow have been documented in a [separate README in the `example` folder](example/README.md).
+
 ## List all people
 
 ```bash
@@ -155,7 +156,8 @@ $ jac people <person1>,<person2>,...
 
 ## Find people with free-text search
 
-Use `--find` or `-f` to find people with free-text search in their first or last name, email or name identifier: 
+Use `--find` or `-f` to find people with free-text search in their first or last name, email or name identifier:
+
 ```bash
 $ jac people --find alice
 $ jac people -f alice
@@ -164,6 +166,7 @@ $ jac people -f alice
 ## List people belonging to any of given groups
 
 Use `--group` or `-g` to filter by group:
+
 ```bash
 $ jac people --group <group1>,<group2>,...
 $ jac people -g <group1>,<group2>,...
@@ -172,6 +175,7 @@ $ jac people -g <group1>,<group2>,...
 ## List people, hiding group columns
 
 Use `--hide-groups` or `-G` to hide group columns (eg: if your terminal is too narrow):
+
 ```bash
 $ jac people --hide-groups
 $ jac people -G
@@ -180,6 +184,7 @@ $ jac people -G
 ## List people, displaying names
 
 Use `--show-names` or `-N` to display identifier names instead of full names:
+
 ```bash
 $ jac people --show-names
 $ jac people -N
@@ -188,6 +193,7 @@ $ jac people -N
 ## Output results as YAML
 
 Use `--yaml` or `-y` to output results as YAML instead of the default table format:
+
 ```bash
 $ jac people --yaml
 $ jac people -y
@@ -196,6 +202,7 @@ $ jac people -y
 ## Output results as tree
 
 Use `--tree` or `-t` to output results as YAML instead of the default table format:
+
 ```bash
 $ jac people --tree
 $ jac people -t
@@ -204,10 +211,12 @@ $ jac people -t
 ## Highlight specific people in tree
 
 Use `--show-all` or `-A` to show all people in tree, highlighting specific people with free-text search:
+
 ```bash
 $ jac people --show-all --tree --find <search>
 $ jac people -Atf <search>
 ```
+
 Without `--show-all`, only people matching the search will be shown, along with their parents.
 
 ## Highlight people of a specific team in tree
@@ -232,6 +241,7 @@ $ jac groups <group1>,<group2>,...
 ## List groups of specific types
 
 Use `--type` to filter by group type:
+
 ```bash
 $ jac groups --type <type1>,<type2>,...
 $ jac groups -T <type1>,<type2>,...
@@ -268,7 +278,7 @@ If you define groups with different `type`'s, it is recommended to prefix their 
 
 - It makes it easier to filter groups by type using wildcards (eg: `stream-*`, `team-*`, `role-*`)
 - It prevents name collisions between groups of different types
-(eg: `stream-devops`, `team-devops` and `role-devops`).
+  (eg: `stream-devops`, `team-devops` and `role-devops`).
 
 ## Organizing groups and people in directories
 
@@ -285,7 +295,7 @@ For example:
 │   └── backend.yaml                    // role-backend
 ├── streams
 │   ├── product1
-│   │   ├── stream.yaml                 // stream-product1 
+│   │   ├── stream.yaml                 // stream-product1
 │   │   ├── dragons
 │   │   │   ├── team.yaml               // team-dragons
 │   │   │   ├── alice-wonderland.yaml
@@ -304,7 +314,7 @@ For example:
 │   │   └── ...
 │   ├── platform
 │   │   ├── team.yaml                   // team-platform
-│   │   └── ... 
+│   │   └── ...
 ```
 
 # How jac resolves directory and glob pattern
@@ -325,7 +335,7 @@ glob: "**/*.yaml"
 
 The `dir` property is optional, can be an absolute path, or be relative to the current
 config file's directory. If specified, Jac will use that directory combined with the `glob`
-expression to find and load its YAML files.  If not specified, Jac will use the current
+expression to find and load its YAML files. If not specified, Jac will use the current
 config file's directory instead. If Jac finds another config file in that directory, it will
 follow the same process over and over until no further config files and directories are found.
 
