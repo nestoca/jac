@@ -9,11 +9,13 @@ on:
       - master
     paths:
       - 'examples/catalog/**'
+      - 'examples/render-action/templates/**'
   pull_request:
     branches:
       - master
     paths:
       - 'examples/catalog/**'
+      - 'examples/render-action/templates/**'
 
 jobs:
   publish-people:
