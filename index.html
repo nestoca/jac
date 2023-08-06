@@ -4,6 +4,7 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&family=Roboto+Mono&display=swap" rel="stylesheet">
 	<style type="text/css">
 		body {
   			font-family: 'Open Sans', sans-serif;
@@ -15,6 +16,17 @@
 		}
 		a:hover {
 			color: #95e8ff;
+		}
+		.resource-label .label {
+			color: rgb(139, 139, 139);	
+		}
+		.resource-label .value {
+  			font-family: 'Roboto Mono', 'Open Sans', sans-serif;
+			background: #545454;
+			word-wrap: break-word;
+			box-decoration-break: clone;
+			padding: .1rem .3rem .2rem;
+			border-radius: .2rem;
 		}
 	</style>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -47,7 +59,7 @@ using the <a href="https://github.com/nestoca/jac/blob/master/examples/render-ac
   <li>Apollo</li>
   <li>Athena</li>
   </ul></li>
-</ul><ul><li>Resource label: <em>dev</em></li></ul></td>
+</ul><div class="resource-label"><span class="label">Resource label:</span> <span class="value">dev</span></div></td>
 		<td rowspan="2">
 			<ul>
 				<li><a href="mailto:rapunzel@example.com">Rapunzel </a> 👨‍💼 Manager 🆘 Support Specialist </li>
@@ -82,7 +94,7 @@ using the <a href="https://github.com/nestoca/jac/blob/master/examples/render-ac
   <li>Social media</li>
   <li>PR</li>
   </ul></li>
-</ul><ul><li>Resource label: <em>marketing</em></li></ul></td>
+</ul><div class="resource-label"><span class="label">Resource label:</span> <span class="value">marketing</span></div></td>
 		<td rowspan="1">
 		</td>
 		<td><b>🌊 Moana&#39;s Team</b></td>
@@ -103,7 +115,7 @@ using the <a href="https://github.com/nestoca/jac/blob/master/examples/render-ac
   <li>Internal IT</li>
   <li>Harware procurement and installation</li>
   </ul></li>
-</ul><ul><li>Resource label: <em>tech</em></li></ul></td>
+</ul><div class="resource-label"><span class="label">Resource label:</span> <span class="value">tech</span></div></td>
 		<td rowspan="2">
 			<ul>
 				<li><a href="mailto:alice@example.com">Alice Wonderland</a> 👨‍💼 Manager 🆘 Support Specialist </li>
