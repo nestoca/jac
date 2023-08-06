@@ -34,7 +34,7 @@ jobs:
         uses: nestoca/jac/examples/render-action@examples
         with:
           catalog: examples/catalog
-          template: examples/templates/teams.html
+          template: examples/render-action/templates/teams.html
           output-file: publish/index.html
 
       - name: Print generated html page

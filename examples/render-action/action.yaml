@@ -30,15 +30,7 @@ runs:
     - name: Render teams page
       shell: bash
       run: |-
-        echo ---
-        echo pwd
-        pwd
         cd ${{ github.action_path }}/render-go
         go build -o ${{ github.action_path }}/render .
         cd -
-        echo ---
-        echo pwd
-        pwd
-        ls -la
-        echo ---
         ${{ github.action_path }}/render ${{ inputs.catalog }} ${{ inputs.template }} ${{ inputs.output-file }}
