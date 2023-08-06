@@ -1,12 +1,33 @@
 <html>
 <head>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+	<style type="text/css">
+		body {
+  			font-family: 'Open Sans', sans-serif;
+			background-color: rgb(47, 47, 47);
+			color: rgb(220, 220, 220);
+		}	
+		a, a:visited, a:active, a:link {
+			color: #77b8ca;
+		}
+		a:hover {
+			color: #95e8ff;
+		}
+	</style>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
+<div class="pure-g">
+<div class="pure-u-1-8"></div>
+<div class="pure-u-3-4">
+
 <h1>Context</h1>
-<p>This page was generated from the <a href="https://github.com/nestoca/jac/examples/catalog">example</a> jac catalog,
-by the <a href="https://github.com/nestoca/people/blob/master/.github/workflows/publish.yaml">publish</a> GitHub workflow,
-using the <a href="https://github.com/nestoca/jac/examples/publish">publish</a> GitHub action.</p>
+<p>This page was generated from the example jac <a href="https://github.com/nestoca/jac/blob/master/examples/catalog">catalog</a>,
+by the <a href="https://github.com/nestoca/people/blob/master/.github/workflows/publish-example.yaml">publish-example</a> GitHub workflow,
+using the <a href="https://github.com/nestoca/jac/blob/master/examples/publish">publish</a> GitHub action.</p>
 <p>For more information, refer to the <a href="https://github.com/nestoca/jac">jac</a> git project.</p>
 <h1>Streams, teams and members</h1>
 <table class="pure-table pure-table-horizontal">
@@ -58,5 +79,9 @@ using the <a href="https://github.com/nestoca/jac/examples/publish">publish</a> 
 	</tr>
 	{{- end }}
 </table>
+
+</div>
+<div class="pure-u-1-8"></div>
+</div>
 </body>
 </html>
