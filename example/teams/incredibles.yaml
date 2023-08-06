@@ -1,9 +1,0 @@
-apiVersion: jac.nesto.ca/v1alpha1
-kind: Group
-metadata:
-  name: team-incredibles
-spec:
-  emoji: 🦸‍♂️
-  fullName: Incredibles Team
-  type: team
-  parent: stream-development

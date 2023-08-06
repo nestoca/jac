@@ -1,8 +1,0 @@
-apiVersion: jac.nesto.ca/v1alpha1
-kind: Group
-metadata:
-  name: role-support
-spec:
-  emoji: 🆘
-  fullName: Support Specialist
-  type: role

@@ -1,9 +1,0 @@
-apiVersion: jac.nesto.ca/v1alpha1
-kind: Group
-metadata:
-  name: team-unicorns
-spec:
-  emoji: 🦄
-  fullName: Unicorns Team
-  type: team
-  parent: stream-tech-support

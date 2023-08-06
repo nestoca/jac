@@ -1,7 +1,0 @@
-apiVersion: jac.nesto.ca/v1alpha1
-kind: Group
-metadata:
-  name: stream-tech-support
-spec:
-  fullName: Tech Support
-  type: stream

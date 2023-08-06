@@ -1,9 +1,0 @@
-apiVersion: jac.nesto.ca/v1alpha1
-kind: Group
-metadata:
-  name: team-moana
-spec:
-  emoji: 🌊
-  fullName: Moana's Team
-  type: team
-  parent: stream-marketing
