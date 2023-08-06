@@ -1,6 +1,11 @@
-# Example
+# Example catalog
 
-This example shows how to use `jac` to list people and groups in a fictional organization.
+To get started:
+
+1. Clone this repo.
+2. Open a shell session.
+3. `cd` into the `examples/catalog` directory.
+4. Try any of the example `jac` query commands below.
 
 ## Groups in this example
 

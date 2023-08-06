@@ -4,6 +4,6 @@ metadata:
   name: team-dragons
 spec:
   emoji: 🐉
-  fullName: Dragons Team
+  fullName: Dragons
   type: team
   parent: stream-tech-support

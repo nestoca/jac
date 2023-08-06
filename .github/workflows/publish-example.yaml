@@ -1,21 +1,21 @@
 # This is an example GitHub Actions workflow that demonstrates how to:
 # 1. Generate an html page from a jac catalog, showing a table of the different streams, teams and their members.
-# 2. Publish it to GitHub Pages. 
-name: Publish example teams page to GitHub Pages
+# 2. Publish it to GitHub Pages.
+name: Publish example teams github page
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'examples/catalog/**'
-      - 'examples/render-action/templates/**'
+      - "examples/catalog/**"
+      - "examples/render-action/templates/**"
   pull_request:
     branches:
       - master
     paths:
-      - 'examples/catalog/**'
-      - 'examples/render-action/templates/**'
+      - "examples/catalog/**"
+      - "examples/render-action/templates/**"
 
 jobs:
   publish-people:
@@ -34,7 +34,7 @@ jobs:
         uses: nestoca/jac/examples/render-action@master
         with:
           catalog: examples/catalog
-          template: examples/templates/teams.html
+          template: examples/render-action/templates/teams.html
           output-file: publish/index.html
 
       - name: Print generated html page
@@ -46,7 +46,7 @@ jobs:
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
-        if: github.ref == 'refs/heads/master'
+        # _if: github.ref == 'refs/heads/master'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: publish
