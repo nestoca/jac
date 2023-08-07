@@ -10,4 +10,4 @@ The following files demonstrate how to use jac with GitHub Actions to automatica
 
 - [publish-example.yaml](../.github/workflows/publish-example.yaml) GitHub Action workflow.
 - [render-action](render-action) GitHub Action action.
-- [Teams, streams and members](https://nestoca.github.io/jac/) HTML page generated and published by the above.
+- [Streams, teams and members](https://nestoca.github.io/jac/) HTML page generated and published by the above.

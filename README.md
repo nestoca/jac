@@ -1,9 +1,17 @@
 # Jac
 
-Jac is a CLI tool and YAML file format for managing people and groups as Infrastructure as Code.
+Jac is a GitOps CLI tool and YAML file format for managing and querying your people metadata Source of Truth™.
 
-- GitOps-oriented: A git repo — called the jac `catalog` — defines the source of truth for all people and groups, from which different processes can be automated, such as provisioning access permissions and generating org charts or team pages.
-- The `jac` CLI allows to query the catalog in various ways.
+- Defines two YAML file formats:
+  - [Person](https://github.com/nestoca/jac#people) for modeling your people (eg: managers, team members...).
+  - [Group](https://github.com/nestoca/jac#groups) for modeling your various sets of people (eg: departments, streams, teams...) and their roles.
+- GitOps-oriented: Your jac "catalog" git repo defines your people metadata, from which you can automate different processes, such as granting access permissions and generating an org chart or a [teams page](https://nestoca.github.io/jac/).
+- The `jac` CLI allows you to query your catalog in various ways, allowing to quickly answer questions such as:
+  - Who's the front-end developer in the Dragons team?
+  - How many back-end developers do we have in the organization?
+  - Who's the manager of the Unicorns team?
+  - What are the email addresses of all SREs?
+- YAML resources are extensible via custom values to address your specific metadata needs.
 
 # Installation
 
@@ -26,7 +34,7 @@ $ brew upgrade jac
 Download from GitHub [releases](https://github.com/nestoca/jac/releases/latest) and put the binary somewhere in your
 `$PATH`.
 
-## Cloning your people git repo
+## Cloning your catalog git repo
 
 Jac commands will look for a git repo at `~/.jac` and fallback to using current directory as default.
 You can override this with the `--dir` or `-d` flag.
@@ -45,7 +53,7 @@ dir: /path/to/repo
 
 # Examples
 
-To get started, clone this repo and have a look at the example catalog, queries and GitHub action in the [examples](examples) directory.
+To get started, clone this repo and have a look at the [examples](examples) directory, where you will find an example [catalog](examples/catalog), queries and a GitHub [workflow](.github/workflows/publish-example.yaml) and [action](examples/render-action) for automatically generating a [teams pages](https://nestoca.github.io/jac/).
 
 # People
 
@@ -57,19 +65,29 @@ can then be organized into groups to represent your specific organizational stru
 ```yaml
 apiVersion: jac.nesto.ca/v1alpha1
 kind: Person
+
 metadata:
-  name: john-doe # ID used to reference this person and query it
+  # Unique ID
+  name: alice-wonderland
+
 spec:
-  firstName: John
-  lastName: Doe
-  email: john.doe@acme.com # Optional email address, for display purposes only
+  # Display info
+  firstName: Alice
+  lastName: Wonderland
+  email: alice@example.com
+
+  # Groups this person belongs to
   groups:
-    - team-sre
-    - role-devops
-    - role-sre
-    - role-team-lead
+    - role-support
+    - role-manager
+    - stream-tech-support
+
+  # Optional parent person for tree-display / org-chart (eg: manager, team lead...)
+  parent: jack-sparrow
+
+  # Arbitrary custom key-value pairs
   values:
-    # Arbitrary custom key-value pairs
+    githubUser: alicewonderland
 ```
 
 # Groups
@@ -83,21 +101,31 @@ can belong to multiple teams, streams, and roles.
 ```yaml
 apiVersion: jac.nesto.ca/v1alpha1
 kind: Group
+
 metadata:
-  name: team-devops # ID used to reference this group and query it and the people in it
+  # Unique ID
+  name: team-devops
+
 spec:
-  fullName: DevOps # Display name
-  email: devops@acme.com # Optional email address
-  type: team # Optional type (eg: stream, team, role, etc) used to filter groups
-  parents:
-    - stream-devops
+  # Display info
+  emoji: 🛠️
+  fullName: DevOps
+  email: devops@example.com
+
+  # Optional type (eg: stream, team, role, etc) used to filter groups
+  type: team
+
+  # Optional parent group for tree-display
+  parent: stream-devops
+
+  # Arbitrary custom key-value pairs
   values:
-    # Arbitrary custom key-value pairs
+    resourceLabel: devops
 ```
 
 ## Group parenting and inheritance
 
-You can specify parent groups for a group via its `parents` property.
+You can specify parent groups for a group via its `parent` property.
 
 All people belonging to a group automatically inherit all of its parent groups. By default, `jac people -g <group>`
 command will list all people belonging to the specified group or any of its child groups, unless the `--immediate` or
