@@ -4,6 +4,6 @@ metadata:
   name: team-moana
 spec:
   emoji: 🌊
-  fullName: Moana's Team
+  fullName: Moana
   type: team
   parent: stream-marketing
