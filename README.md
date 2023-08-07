@@ -356,7 +356,7 @@ When you run `jac` it looks for `.jacrc` file in the following locations:
 That file is in YAML format and can contain the following properties:
 
 ```yaml
-dir: path/to/directory
+dir: /full/path/to/directory
 glob: "**/*.yaml"
 ```
 
@@ -367,7 +367,6 @@ config file's directory instead. If Jac finds another config file in that direct
 follow the same process over and over until no further config files and directories are found.
 
 The `glob` is optional, defaults to `**/*.yaml`
-
 # Why the name Jac?
 
 - It's a short 3-letter command that's easy to type and remember.
