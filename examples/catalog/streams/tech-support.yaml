@@ -1,0 +1,15 @@
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Group
+metadata:
+  name: stream-tech-support
+spec:
+  fullName: Tech Support
+  type: stream
+  values:
+    resourceLabel: tech
+    description: >
+      - Internal and external tech support
+        - Customer service
+        - Customer success
+        - Internal IT
+        - Harware procurement and installation

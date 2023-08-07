@@ -16,7 +16,7 @@ func newPeopleCmd() *cobra.Command {
 	formatTree := false
 	formatYaml := false
 	showAll := false
-	showGroupColumns := false
+	hideGroupColumns := false
 	showNameIdentifiers := false
 
 	cmd := &cobra.Command{
@@ -26,8 +26,8 @@ func newPeopleCmd() *cobra.Command {
 		Args:    cobra.ArbitraryArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Create opts
-			highlightMatches := showAll && (len(args) > 0 || findPattern != "" || groupPattern != "")
-			opts := printing.NewPrintOpts(formatTree, formatYaml, showAll, showGroupColumns, showNameIdentifiers, highlightMatches)
+			highlightMatches := (showAll || formatTree) && (len(args) > 0 || findPattern != "" || groupPattern != "")
+			opts := printing.NewPrintOpts(formatTree, formatYaml, showAll, hideGroupColumns, showNameIdentifiers, highlightMatches)
 
 			// Load config
 			cfg, err := config.LoadConfig(catalogDir)
@@ -68,7 +68,7 @@ func newPeopleCmd() *cobra.Command {
 	cmd.Flags().StringVarP(&findPattern, "find", "f", "", "Find people with free-text search in their first or last name, email or name identifier")
 	cmd.Flags().BoolVarP(&formatYaml, "yaml", "y", false, "Print people as YAML")
 	cmd.Flags().BoolVarP(&formatTree, "tree", "t", false, "Print people as a tree")
-	cmd.Flags().BoolVarP(&showGroupColumns, "show-groups", "G", false, "Show groups for people matching filter")
+	cmd.Flags().BoolVarP(&hideGroupColumns, "hide-groups", "G", false, "Hide group columns in table")
 	cmd.Flags().BoolVarP(&showNameIdentifiers, "show-names", "N", false, "Show identifier names instead of full names")
 	cmd.Flags().BoolVarP(&showAll, "show-all", "A", false, "Show all people in tree, regardless of filter, highlighting matches")
 	cmd.Flags().BoolVarP(&immediateFlag, "immediate", "i", false, "Consider only immediate groups in filter, not inherited ones")

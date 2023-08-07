@@ -15,7 +15,7 @@ type Group struct {
 	Members         []*Person
 	IndirectMembers []*Person
 	AllMembers      []*Person
-	values          map[string]interface{}
+	Values          map[string]interface{}
 }
 
 func (g *Group) GetYaml() string {
@@ -34,15 +34,25 @@ func (g *Group) GetDisplayName(showNames, allowEmoji bool) string {
 	return g.Name
 }
 
-func (g *Group) GetValue(keyPath string) (string, bool) {
-	if g.values == nil {
-		var err error
-		g.values, err = loadValues(g.Spec.Values.Raw)
-		if err != nil {
-			panic(fmt.Errorf("loading values for group %s: %w", g.Name, err))
-		}
+func (g *Group) LoadValues() error {
+	var err error
+	g.Values, err = loadValues(g.Spec.Values.Raw)
+	if err != nil {
+		return fmt.Errorf("loading values for group %s: %w", g.Name, err)
 	}
-	return getValue(g.values, keyPath)
+	return nil
+}
+
+func (g *Group) GetValueOrDefault(keyPath, defaultValue string) string {
+	value, ok := g.GetValue(keyPath)
+	if ok {
+		return value
+	}
+	return defaultValue
+}
+
+func (g *Group) GetValue(keyPath string) (string, bool) {
+	return getValue(g.Values, keyPath)
 }
 
 func (g *Group) HasDescendant(group *Group) bool {

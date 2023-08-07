@@ -1,0 +1,13 @@
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Person
+metadata:
+  name: elsa
+spec:
+  firstName: Elsa
+  lastName: null
+  email: elsa@example.com
+  groups:
+    - role-backend
+    - team-fairies
+  values:
+    githubUser: elsa

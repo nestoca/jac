@@ -1,0 +1,16 @@
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Group
+metadata:
+  name: stream-marketing
+spec:
+  fullName: Marketing
+  type: stream
+  values:
+    resourceLabel: marketing
+    description: >
+      - Comms and marketing
+        - Comms strategy
+        - Branding
+        - Content
+        - Social media
+        - PR

@@ -1,0 +1,13 @@
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Person
+metadata:
+  name: violet-parr
+spec:
+  firstName: Violet
+  lastName: Parr
+  email: violet@example.com
+  groups:
+    - role-frontend
+    - team-incredibles
+  values:
+    githubUser: violetparr

@@ -15,7 +15,7 @@ type Person struct {
 	AllGroupNames   []string
 	Parent          *Person
 	Children        []*Person
-	values          map[string]interface{}
+	Values          map[string]interface{}
 }
 
 func (p *Person) GetYaml() string {
@@ -29,15 +29,25 @@ func (p *Person) GetDisplayName(showNames bool) string {
 	return p.Name
 }
 
-func (p *Person) GetValue(keyPath string) (string, bool) {
-	if p.values == nil {
-		var err error
-		p.values, err = loadValues(p.Spec.Values.Raw)
-		if err != nil {
-			panic(fmt.Errorf("loading values for person %s: %w", p.Name, err))
-		}
+func (p *Person) LoadValues() error {
+	var err error
+	p.Values, err = loadValues(p.Spec.Values.Raw)
+	if err != nil {
+		return fmt.Errorf("loading values for person %s: %w", p.Name, err)
 	}
-	return getValue(p.values, keyPath)
+	return nil
+}
+
+func (p *Person) GetValueOrDefault(keyPath, defaultValue string) string {
+	value, ok := p.GetValue(keyPath)
+	if ok {
+		return value
+	}
+	return defaultValue
+}
+
+func (p *Person) GetValue(keyPath string) (string, bool) {
+	return getValue(p.Values, keyPath)
 }
 
 func (p *Person) IsMemberOfGroup(group *Group) bool {

@@ -25,7 +25,7 @@ func newGroupsCmd() *cobra.Command {
 		Args:    cobra.ArbitraryArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Create opts
-			highlightMatches := showAll && (len(args) > 0 || findPattern != "" || typePattern != "")
+			highlightMatches := (showAll || formatTree) && (len(args) > 0 || findPattern != "" || typePattern != "")
 			opts := printing.NewPrintOpts(formatTree, formatYaml, showAll, showGroupColumns, showNameIdentifiers, highlightMatches)
 
 			// Load config

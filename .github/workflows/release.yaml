@@ -2,11 +2,16 @@ name: Release
 
 on:
   push:
-    branches: ["master"]
+    branches:
+      - master
+    paths-ignore:
+      - .github/**
+      - examples/**
+      - "**/README.md"
 
 permissions:
   contents: write
-      
+
 jobs:
   release:
     runs-on: ubuntu-latest

@@ -1,0 +1,56 @@
+# This is an example GitHub Actions workflow that demonstrates how to:
+# 1. Generate an html page from a jac catalog, showing a table of the different streams, teams and their members.
+# 2. Publish it to GitHub Pages.
+name: Publish example teams github page
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "examples/catalog/**"
+      - "examples/render-action/templates/**"
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "examples/catalog/**"
+      - "examples/render-action/templates/**"
+
+jobs:
+  publish-people:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Create publish dir
+        shell: bash
+        run: |
+          mkdir publish
+
+      - name: Render teams html page
+        uses: nestoca/jac/examples/render-action@master
+        with:
+          catalog: examples/catalog
+          template: examples/render-action/templates/teams.html
+          output-file: publish/index.html
+
+      - name: Print generated html page
+        if: github.ref != 'refs/heads/master'
+        shell: bash
+        run: |
+          echo "Generated teams page:"
+          cat publish/index.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        # _if: github.ref == 'refs/heads/master'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: publish
+          keep_files: false
+          user_name: GitHub Actions
+          user_email: actions@github.com
+          commit_message: Update teams page

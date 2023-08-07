@@ -1,0 +1,13 @@
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Person
+metadata:
+  name: maui
+spec:
+  firstName: Maui
+  lastName: null
+  email: maui@example.com
+  groups:
+    - role-backend
+    - team-moana
+  values:
+    githubUser: maui

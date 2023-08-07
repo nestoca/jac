@@ -33,7 +33,7 @@ func (p *Printer) printPeopleTable(matchingPeople []*live.Person) {
 	table.SetCenterSeparator("")
 
 	headers := []string{"NAME", "FIRST NAME", "LAST NAME", "EMAIL"}
-	if p.opts.ShowGroupColumns {
+	if !p.opts.HideGroupColumns {
 		headers = append(headers, "GROUPS")
 		headers = append(headers, "INHERITED GROUPS")
 	}
@@ -60,7 +60,7 @@ func (p *Printer) printPeopleTable(matchingPeople []*live.Person) {
 
 		// Build row
 		row := []string{person.Name, person.Spec.FirstName, person.Spec.LastName, person.Spec.Email}
-		if p.opts.ShowGroupColumns {
+		if !p.opts.HideGroupColumns {
 			row = append(row, groupNames)
 			row = append(row, inheritedGroupNames)
 		}
@@ -77,6 +77,7 @@ func (p *Printer) printPeopleTable(matchingPeople []*live.Person) {
 	}
 
 	table.Render()
+	p.printCount(len(matchingPeople))
 }
 
 func (p *Printer) printPeopleYaml(people []*live.Person) error {
@@ -93,7 +94,8 @@ func (p *Printer) printPeopleYaml(people []*live.Person) error {
 }
 
 func (p *Printer) printPeopleTree(matchingPeople []*live.Person) {
-	tree.PrintHr(p.newTreeForPeople("", p.catalog.Root.People, matchingPeople, 1))
+	tree.PrintHrn(p.newTreeForPeople("", p.catalog.Root.People, matchingPeople, 1))
+	p.printCount(len(matchingPeople))
 }
 
 func (p *Printer) newTreeForPerson(person *live.Person, matchingPeople []*live.Person, isHighlighted bool, depth int) *Node {

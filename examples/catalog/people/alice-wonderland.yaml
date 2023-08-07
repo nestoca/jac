@@ -1,0 +1,15 @@
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Person
+metadata:
+  name: alice-wonderland
+spec:
+  firstName: Alice
+  lastName: Wonderland
+  email: alice@example.com
+  groups:
+    - role-support
+    - role-manager
+    - stream-tech-support
+  parent: jack-sparrow
+  values:
+    githubUser: alicewonderland

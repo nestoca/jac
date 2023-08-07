@@ -1,6 +1,7 @@
 package printing
 
 import (
+	"fmt"
 	"github.com/TwiN/go-color"
 	"github.com/nestoca/jac/pkg/live"
 	"regexp"
@@ -29,7 +30,7 @@ func highlight(text string) string {
 	// correctly when cells wrap in the table library.
 	tokens := wordBoundariesRegex.FindAllString(text, -1)
 	for i, token := range tokens {
-		tokens[i] = color.Colorize(color.Yellow, token)
+		tokens[i] = color.InYellow(token)
 	}
 	return strings.Join(tokens, "")
 }
@@ -39,4 +40,8 @@ func highlightAll(texts []string) (highlighted []string) {
 		highlighted = append(highlighted, highlight(text))
 	}
 	return
+}
+
+func (p *Printer) printCount(count int) {
+	fmt.Printf(" ———\n %s %s\n", color.InWhite("Count:"), color.InYellow(count))
 }

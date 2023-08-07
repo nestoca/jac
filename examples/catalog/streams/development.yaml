@@ -1,0 +1,15 @@
+apiVersion: jac.nesto.ca/v1alpha1
+kind: Group
+metadata:
+  name: stream-development
+spec:
+  fullName: Development
+  type: stream
+  values:
+    resourceLabel: dev
+    description: >
+      - Development of main products:
+        - Antares
+        - Sirius
+        - Apollo
+        - Athena 

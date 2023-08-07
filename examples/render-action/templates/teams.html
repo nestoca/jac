@@ -1,0 +1,99 @@
+<html>
+<head>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&family=Roboto+Mono&display=swap" rel="stylesheet">
+	<style type="text/css">
+		body {
+  			font-family: 'Open Sans', sans-serif;
+			background-color: rgb(47, 47, 47);
+			color: rgb(220, 220, 220);
+		}	
+		a, a:visited, a:active, a:link {
+			color: #77b8ca;
+		}
+		a:hover {
+			color: #95e8ff;
+		}
+		.resource-label .label {
+			color: rgb(139, 139, 139);	
+		}
+		.resource-label .value {
+  			font-family: 'Roboto Mono', 'Open Sans', sans-serif;
+			background: #545454;
+			word-wrap: break-word;
+			box-decoration-break: clone;
+			padding: .1rem .3rem .2rem;
+			border-radius: .2rem;
+		}
+	</style>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class="pure-g">
+<div class="pure-u-1-8"></div>
+<div class="pure-u-3-4">
+
+<h1>Context</h1>
+<p>This page was generated from the example jac <a href="https://github.com/nestoca/jac/blob/master/examples/catalog">catalog</a>,
+by the <a href="https://github.com/nestoca/jac/blob/master/.github/workflows/publish-example.yaml">publish-example</a> GitHub workflow,
+using the <a href="https://github.com/nestoca/jac/blob/master/examples/render-action">render-action</a> GitHub action.</p>
+<p>For more information, refer to the <a href="https://github.com/nestoca/jac">jac</a> git project.</p>
+<h1>Streams, teams and members</h1>
+<table class="pure-table pure-table-horizontal">
+	<tr>
+		<th><b>Streams</b></th>
+		<th><b>Description</b></th>
+		<th><b>Stream Members</b></th>
+		<th><b>Teams</b></th>
+		<th><b>Teams Members</b></th>
+	</tr>
+	{{- range $streamIndex, $stream := .Streams }}
+	<tr>
+		<td rowspan="{{ len $stream.Teams }}"><b>{{ $stream.Name }}</b></td>
+		<td rowspan="{{ len $stream.Teams }}">
+			{{- $stream.Description | safeHTML }}
+			{{- $resourceLabel := getValue $stream "resourceLabel" }}
+			{{- if $resourceLabel }}<div class="resource-label"><span class="label">Resource label:</span> <span class="value">{{ $resourceLabel }}</span></div>{{ end -}}
+		</td>
+		<td rowspan="{{ len $stream.Teams }}">
+			{{- if $stream.Members }}
+			<ul>
+				{{- range $stream.Members }}
+				<li><a href="mailto:{{ .Email }}">{{ .Name }}</a>{{ " " }}
+					{{- range .Roles -}}
+					{{- .Name -}}{{ " " }}
+					{{- end -}}
+				</li>
+				{{- end }}
+			</ul>
+			{{- end }}
+		</td>
+	{{- range $teamIndex, $team := $stream.Teams }}
+	{{- if gt $teamIndex 0 }}
+	</tr><tr>
+	{{- end }}
+		<td><b>{{ $team.Name }}</b></td>
+		<td>
+			<ul>
+				{{- range $team.Members }}
+				<li><a href="mailto:{{ .Email }}">{{ .Name }}</a>{{ " " }}
+					{{- range .Roles -}}
+					{{- .Name -}}{{ " " }}
+					{{- end -}}
+				</li>
+				{{- end }}
+			</ul>
+		</td>
+	{{- end }}
+	</tr>
+	{{- end }}
+</table>
+
+</div>
+<div class="pure-u-1-8"></div>
+</div>
+</body>
+</html>

@@ -8,11 +8,11 @@ const (
 	FormatYAML
 )
 
-func NewPrintOpts(formatTree, formatYaml, showAll, showGroupColumns, showIdentifierNames, highlightMatches bool) *PrintOpts {
+func NewPrintOpts(formatTree, formatYaml, showAll, hideGroupColumns, showIdentifierNames, highlightMatches bool) *PrintOpts {
 	opts := PrintOpts{
 		Format:              FormatTable,
 		ShowAll:             showAll,
-		ShowGroupColumns:    showGroupColumns,
+		HideGroupColumns:    hideGroupColumns,
 		ShowIdentifierNames: showIdentifierNames,
 		HighlightMatches:    highlightMatches,
 	}
@@ -35,8 +35,8 @@ type PrintOpts struct {
 	// filters, but highlighting the matched ones.
 	ShowAll bool
 
-	// Whether to show the group columns in the table format.
-	ShowGroupColumns bool
+	// Whether to hide the group columns in the table format.
+	HideGroupColumns bool
 
 	// Whether to show only the identifier names instead of the full names.
 	ShowIdentifierNames bool
