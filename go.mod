@@ -3,7 +3,7 @@ module github.com/nestoca/jac
 go 1.19
 
 require (
-	github.com/TwiN/go-color v1.4.0
+	github.com/TwiN/go-color v1.4.1
 	github.com/antlr4-go/antlr/v4 v4.13.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/silphid/ppds v0.0.1
