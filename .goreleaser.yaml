@@ -22,7 +22,7 @@ changelog:
       - "^docs:"
       - "^test:"
 brews:
-  - tap:
+  - repository:
       owner: nestoca
       name: homebrew-public
     homepage: "https://github.com/nestoca/jac"

@@ -374,3 +374,4 @@ The `glob` is optional, defaults to `**/*.yaml`
 - It sounds like the name of a person, which gives it some personality.
 - It falls in line nicely with other tools by same authors, such as [joy](https://github.com/nestoca/joy), [jen](https://github.com/silphid/jen), and [yey](https://github.com/silphid/yey).
 - Could mean something like "Johns and Janes As Code".
+
