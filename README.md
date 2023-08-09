@@ -2,7 +2,7 @@
 
 Jac is a GitOps CLI tool and YAML file format for managing and querying your people metadata Source of Truth™.
 
-- Defines two YAML file formats:
+- Defines two CRD-like YAML file formats:
   - [Person](https://github.com/nestoca/jac#people) for modeling your people (eg: managers, team members...).
   - [Group](https://github.com/nestoca/jac#groups) for modeling your various sets of people (eg: departments, streams, teams...) and their roles.
 - GitOps-oriented: Your jac "catalog" git repo defines your people metadata, from which you can automate different processes, such as granting access permissions and generating an org chart or a [teams page](https://nestoca.github.io/jac/).
@@ -40,7 +40,7 @@ Jac commands will look for a git repo at `~/.jac` and fallback to using current 
 You can override this with the `--dir` or `-d` flag.
 
 ```bash
-$ git clone git@github.com:<repo-owner>/<people-repo>.git ~/.jac
+$ git clone git@github.com:<repo-owner>/<catalog-repo>.git ~/.jac
 ```
 
 ## Cloning to a different directory
@@ -367,6 +367,7 @@ config file's directory instead. If Jac finds another config file in that direct
 follow the same process over and over until no further config files and directories are found.
 
 The `glob` is optional, defaults to `**/*.yaml`
+
 # Why the name Jac?
 
 - It's a short 3-letter command that's easy to type and remember.
