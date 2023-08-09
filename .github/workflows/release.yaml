@@ -50,9 +50,7 @@ jobs:
         if: github.ref != 'refs/heads/master'
         uses: goreleaser/goreleaser-action@v4
         with:
-          args: build
-        env:
-          GORELEASER_CURRENT_TAG: v9.9.9
+          args: build --skip-validate
 
       - name: Release
         if: github.ref == 'refs/heads/master'
