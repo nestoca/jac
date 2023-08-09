@@ -51,6 +51,8 @@ jobs:
         uses: goreleaser/goreleaser-action@v4
         with:
           args: build
+        env:
+          GORELEASER_CURRENT_TAG: v9.9.9
 
       - name: Release
         if: github.ref == 'refs/heads/master'
