@@ -8,6 +8,13 @@ on:
       - .github/**
       - examples/**
       - "**/README.md"
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - .github/**
+      - examples/**
+      - "**/README.md"     
 
 permissions:
   contents: write
@@ -33,14 +40,22 @@ jobs:
           cache-dependency-path: go.sum
 
       - name: Tag commit
+        if: github.ref == 'refs/heads/master'
         uses: silphid/actions/tag-commit@v1
         with:
           tag: ${{ steps.version.outputs.git-tag }}
 
-      - name: Release
+
+      - name: Release dry-run
+        if: github.ref != 'refs/heads/master'
         uses: goreleaser/goreleaser-action@v4
         with:
-          version: latest
+          args: build
+
+      - name: Release
+        if: github.ref == 'refs/heads/master'
+        uses: goreleaser/goreleaser-action@v4
+        with:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GH_HOMEBREW_PUBLIC_TOKEN }}
