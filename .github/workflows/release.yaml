@@ -26,7 +26,7 @@ jobs:
         uses: silphid/actions/get-version@master
 
       - name: Setup go environment
-        uses: actions/setup-go@v3.3.1
+        uses: actions/setup-go@v3.5.0
         with:
           go-version-file: go.mod
           cache: true
