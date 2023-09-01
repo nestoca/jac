@@ -2,15 +2,17 @@ package live
 
 import (
 	"fmt"
-	"github.com/nestoca/jac/api/v1alpha1"
-	"github.com/nestoca/jac/pkg/filtering"
-	"gopkg.in/godo.v2/glob"
-	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/runtime/serializer"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"gopkg.in/godo.v2/glob"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/serializer"
+
+	"github.com/nestoca/jac/api/v1alpha1"
+	"github.com/nestoca/jac/pkg/filtering"
 )
 
 type Catalog struct {
@@ -38,6 +40,11 @@ func NewCatalog() *Catalog {
 }
 
 func LoadCatalog(dir, glob string) (*Catalog, error) {
+	dir, err := filepath.EvalSymlinks(dir)
+	if err != nil {
+		return nil, err
+	}
+
 	fullGlob := filepath.Join(dir, glob)
 
 	c := NewCatalog()
