@@ -28,8 +28,8 @@ require (
 	github.com/shivamMg/ppds v0.0.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	golang.org/x/exp v0.0.0-20230515195305-f3d0a9c9a5cc // indirect
-	golang.org/x/net v0.8.0 // indirect
-	golang.org/x/text v0.8.0 // indirect
+	golang.org/x/net v0.17.0 // indirect
+	golang.org/x/text v0.13.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	k8s.io/klog/v2 v2.90.1 // indirect
