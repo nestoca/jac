@@ -7,7 +7,7 @@ require (
 	github.com/antlr4-go/antlr/v4 v4.13.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/silphid/ppds v0.0.1
-	github.com/spf13/cobra v1.7.0
+	github.com/spf13/cobra v1.8.0
 	gopkg.in/godo.v2 v2.0.9
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.27.4
