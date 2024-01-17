@@ -154,6 +154,7 @@ func (c *Catalog) Load(globExpr string) error {
 		c.resolveInheritedGroups(person)
 		for _, group := range person.InheritedGroups {
 			group.IndirectMembers = append(group.IndirectMembers, person)
+			group.AllMembers = append(group.AllMembers, person)
 		}
 	}
 
